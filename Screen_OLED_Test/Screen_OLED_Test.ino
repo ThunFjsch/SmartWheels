@@ -2,9 +2,9 @@
 #include <U8g2lib.h>
 
 
-//2.5 hours; reading library documentation and understanding
+//4.5 hours; reading library documentation and understanding
 // U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8 (U8X8_PIN_NONE); //pin used A4 (SDA) and A5 (SCL)
-U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);// [page buffer, size = 128 bytes]
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);// [page buffer, size = 128 B]
 
 // All the images/bitmap
 #define  AT_width 18
@@ -189,10 +189,36 @@ int buttoninput = 0;
 int state = 0;
 int old = 0;
 
+// Variables to store the time
+int hours = 0;
+int minutes = 0;
+int seconds = 0;
+
+const int MODE_SHOW_TIME = 0;
+const int MODE_SET_SECONDS = 3;
+const int MODE_SET_MINUTES = 2;
+const int MODE_SET_HOURS = 1;
+
+// Char array for the time being showed on the display
+char timeString[9];
+
+// Variables to store the time
+unsigned long currentMillis = 0;
+
+// Int is enough to store the elapsed time
+int elapsedTimeUpdateMillis = 0;
+unsigned long previousTimeUpdateMillis = 0;
+
+float percentageOfSecondElapsed = 0;
+
+int currentMode = MODE_SHOW_TIME;
+
+
 void setup(void)
 {
   Serial.begin(9600);
   u8g2.setColorIndex(1);
+  u8g2.setFont(u8g2_font_freedoomr10_tu);
   u8g2.begin(); // begin u8g2 library
   u8g2.setBitmapMode(1);
 
@@ -202,6 +228,18 @@ void setup(void)
 
 void loop(void)
 {
+
+  currentMillis = millis();
+
+  checkTime();
+
+  if (currentMode == MODE_SHOW_TIME) {
+    increaseSeconds();
+  } else {
+    previousTimeUpdateMillis = currentMillis;
+  }
+
+  
 
   speed = map(analogRead(A0), 0, 1023, 0, 100); // Converting analog readings from 0-1023 to 0-100
   itoa(speed, speed_string, 10); //integer converted into char with the 10 decimal value
@@ -244,6 +282,14 @@ void loop(void)
         break;
     }
 
+    // Drawing Time 
+    if (currentMode != MODE_SHOW_TIME) {
+      u8g2.drawTriangle((currentMode - 1) * 43 + 5, 0, currentMode * 43 - 5, 0, (currentMode - 1) * 43 + 21, 5);
+    }
+    sprintf_P(timeString, PSTR("%2d:%02d:%02d"), hours, minutes, seconds);
+    // Draw the timeString
+    u8g2.drawStr(73, 12, timeString);
+
     // Drawing the other non-animated elements
      u8g2.drawXBMP( 23,  51,  18, 11, AT_bits);
      u8g2.drawXBMP( 23,  37,  16, 12, AT_icon_bits);
@@ -254,6 +300,41 @@ void loop(void)
      u8g2.drawXBMP( 45,  51,  18, 11, SM_bits);
      u8g2.drawXBMP( 45,  37,  17, 13, SM_Icon_bits);
      u8g2.drawXBMP( 17,  9,  6, 12, status_battery_bits);
+
   } while (u8g2.nextPage()  );
     
 }
+
+void checkTime() {
+  // Check if a minutes has been elapsed
+  if (seconds > 59) {
+    seconds = 0;
+    minutes++;
+  }
+
+  // Check if an hour has been elapsed
+  if (minutes > 59) {
+    minutes = 0;
+    hours++;
+  }
+
+  // Check if a day has been elapsed
+  if (hours > 12) {
+    hours = 1;
+  }
+}
+
+void increaseSeconds() {
+  elapsedTimeUpdateMillis = currentMillis - previousTimeUpdateMillis;
+
+  // Check if 1000ms, 1 second, has been elapsed
+  if (elapsedTimeUpdateMillis > 1000) {
+    seconds++;
+    // It might be possible that more than 1000ms has been elapsed e.g. 1200ms 
+    // Then there are already 200ms elapsed of the next second. We need to
+    // substract these on the "last time". So the next second will be updated 200ms earlier. 
+    // This reduces the amount of time drift.
+    previousTimeUpdateMillis = currentMillis - (elapsedTimeUpdateMillis - 1000);
+  }
+}
+
