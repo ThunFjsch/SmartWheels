@@ -1,24 +1,28 @@
 #include <time.h>
-int leftMotorSide = 8;   // is connected with yellow wire
-int rightMotorSide = 9;   // is connected with brown wire
-int enablePWMPinLeft = 10;   // is connected with blue wire
-int enablePWMPinRight = 11;  // is connected with white wire
-// TODO: create function that returns strength 0-255 with input in %
-int brushMotorStrength = 240;    // the higher the number the lower the strength
+#include "MotorModule.h"
+int leftMotorSide;   // is connected with yellow wire
+int rightMotorSide;   // is connected with brown wire
+int enablePWMLeft;   // is connected with blue wire
+int enablePWMRight;  // is connected with white wire
 
-void setup() {
+void initMotorModule(int LeftMotorSide, int RightMotorSide, int enablePWMLeft, int enablePWMRight, bool debug) {
+  leftMotorSide = LeftMotorSide;
+  rightMotorSide = RightMotorSide;
+  enablePWMLeft = enablePWMLeft;
+  enablePWMRight = enablePWMRight;
+  
   // Setup HBridge Pins
   pinMode(leftMotorSide, OUTPUT);
   digitalWrite(leftMotorSide, LOW);
   pinMode(rightMotorSide, OUTPUT);
   digitalWrite(rightMotorSide, LOW);
-  pinMode(enablePWMPinLeft, OUTPUT);
-  pinMode(enablePWMPinRight, OUTPUT);
+  pinMode(enablePWMLeft, OUTPUT);
+  pinMode(enablePWMRight, OUTPUT);
   Serial.begin(9600);
   Serial.println("test");
 
   // Debug & testing.
-  if(true){
+  if(debug){
     motorLinearIncreaseTest();
     motorHighDrasticSpeedChange();
     forwardBackwardsDrivingTest();
@@ -26,10 +30,7 @@ void setup() {
     complexSteeringTest();
     stopMotors();
   }
-  
 }
-
-void loop(){}
 
 void stopMotors(){
   setAllMotorSpeed(0);
@@ -40,16 +41,16 @@ void stopMotors(){
 // So that other Modules can set the speed of the vehicle
 // Set Speed between 0 - 255
 void setAllMotorSpeed(int newSpeed){
-  analogWrite(enablePWMPinLeft, newSpeed);
-  analogWrite(enablePWMPinRight, newSpeed);
+  analogWrite(enablePWMLeft, newSpeed);
+  analogWrite(enablePWMRight, newSpeed);
 }
 
 void setLeftMotorSpeed(int newSpeed){
-  analogWrite(enablePWMPinLeft, newSpeed);
+  analogWrite(enablePWMLeft, newSpeed);
 }
 
 void setRightMotorSpeed(int newSpeed){
-  analogWrite(enablePWMPinRight, newSpeed);
+  analogWrite(enablePWMRight, newSpeed);
 }
 
 // direction true is forward, false backwards
@@ -82,8 +83,8 @@ void steerRightSimple(int rightMotorForce){
 // Complex steering takes the individual speeds for both sides
 // because of that more complex steering maneuvers are possible 
 void complexSteering(int rightMotorForce, int leftMotorForce){
-  analogWrite(enablePWMPinLeft, rightMotorForce);
-  analogWrite(enablePWMPinRight, leftMotorForce);
+  analogWrite(enablePWMLeft, rightMotorForce);
+  analogWrite(enablePWMRight, leftMotorForce);
 }
 
 /* ========================= Testing functions ================================= */
@@ -93,9 +94,20 @@ void complexSteering(int rightMotorForce, int leftMotorForce){
 // While testing I observed that the speed on the linearIncrease that the speed at 80 wasn't the same as in the motorHighDrasticSpeedChange
 void motorLinearIncreaseTest(){     
   setMotorDirection(true);  
-  linearMotorSpeedIncrease();
+  for(int i = 0; i <= 255;){    // remember 255 is the upper Motor limit
+    Serial.println(i);
+    setAllMotorSpeed(i);
+    delay(100);
+    i++;
+  }
+  
   setMotorDirection(false);
-  linearMotorSpeedIncrease();
+  for(int i = 0; i <= 255;){    // remember 255 is the upper Motor limit
+    Serial.println(i);
+    setAllMotorSpeed(i);
+    delay(100);
+    i++;
+  }
   stopMotors();
 }
 
@@ -179,13 +191,4 @@ void complexSteeringTest(){
   }
 
   stopMotors();
-}
-
-void linearMotorSpeedIncrease(){
-  for(int i = 0; i <= 255;){    // remember 255 is the upper Motor limit
-    Serial.println(i);
-    setAllMotorSpeed(i);
-    delay(100);
-    i++;
-  }
 }
