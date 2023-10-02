@@ -1,6 +1,8 @@
 #ifndef MotorModule_H
 #define  MotorModule_H
 #include <Arduino.h>
+#include <time.h>
+
 	void initMotorModule(int leftMotorPinSide, int rightMotorPinSide, int EnablePWMPinLeft, int EnablePWMPinRight, bool debug);
 
 	void stopMotors();

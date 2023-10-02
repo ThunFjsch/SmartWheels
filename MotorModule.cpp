@@ -1,5 +1,7 @@
 #include <time.h>
+#include <Arduino.h>
 #include "MotorModule.h"
+
 int leftMotorSide;   // is connected with yellow wire
 int rightMotorSide;   // is connected with brown wire
 int enablePWMLeft;   // is connected with blue wire
