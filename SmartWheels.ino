@@ -1,24 +1,14 @@
-#include <time.h>
 #include "MotorModule.h"
 
-#define leftMotorPinSide 8    // is connected with Inverter Input A1
-#define rightMotorPinSide 9   // is connected with Inverter Input A2
-#define enablePWMPinLeft 10   // is connected with blue wire
-#define enablePWMPinRight 11  // is connected with white wire
+const int leftMotorPinSide = 8;    // is connected with Inverter Input A1
+const int rightMotorPinSide = 9;   // is connected with Inverter Input A2
+const int  enablePWMPinLeft = 10;   // is connected with blue wire
+const int enablePWMPinRight = 11;  // is connected with white wire
 
 void setup() {
-  // put your setup code here, to run once:
-  initMotorModule(rightMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, false);
-
-    motorLinearIncreaseTest();
-    motorHighDrasticSpeedChange();
-    forwardBackwardsDrivingTest();
-    simpleSteeringTest();
-    complexSteeringTest();
-    stopMotors();
+  // Here the initialisation of the MotorModule is called
+  // the true will execute the Debug code
+  initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, true);
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
+void loop() {}
