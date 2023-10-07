@@ -23,7 +23,6 @@ void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft
   digitalWrite(rightMotorSide, LOW);
   pinMode(enablePWMLeft, OUTPUT);
   pinMode(enablePWMRight, OUTPUT);
-  Serial.begin(9600);
 
   // Debug & testing
   if(debug){
