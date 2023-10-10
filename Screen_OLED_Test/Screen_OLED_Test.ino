@@ -1,19 +1,18 @@
 #include "OLEDScreen.h"
+#define modeSwitchButton 6
 
-//7.5 hours; reading library documentation and understanding
+bool direction = true;
 
 void setup(void)
 {
-  initIOModule();
+  initIOModule(modeSwitchButton, direction);
 }
 
 void loop(void)
 {
-  checkTime();
   showTime();
   timeSave();
-  elements();
-  increaseSeconds();
+  drawDisplayBitmaps();
 }
 
 
