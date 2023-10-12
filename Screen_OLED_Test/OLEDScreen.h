@@ -9,15 +9,18 @@ void showTime();
 void timeSave();
 /* =============================== Initialize ================================= */
 void setDirection();
-void initIOModule(int _modeSwitchButton, bool initDirection);
+void initIOModule(int _modeSwitchButton, bool initForwBackDirection, bool initLeftRightDirection, bool debug);
 /* =============================== Animated Icons ================================= */
 void modeHighlight();
 void arrowUp();
 void arrowDown();
+void arrowLeft();
+void arrowRight();
+void batteryStatus();
 /* =============================== Non-animated Icons ================================= */
 void drawDisplayBitmaps();
-/* =============================== Debuggin Functions ================================= */
-// void batteryStatus();
+/* =============================== Testing Functions ================================= */
+void testBitmaps();
 /* =============================== Bitmaps ================================= */
 #define  automaticBits_width 18
 #define  automaticBits_height 11
@@ -113,6 +116,22 @@ const unsigned char arrowUpBits[] PROGMEM =  {
     0x80, 0x01, 0xC0, 0x03, 0x60, 0x06, 0x30, 0x0C, 0x18, 0x18, 0x0C, 0x30,
     0x06, 0x60, 0x03, 0xC0, 0x3F, 0xFC, 0x20, 0x04, 0x20, 0x04, 0x20, 0x04,
     0x20, 0x04, 0x20, 0x04, 0x20, 0x04, 0xE0, 0x07, };
+#define leftArrow_width 7
+#define leftArrow_height 9
+const unsigned char leftArrowBits[] PROGMEM = {
+  0x70, 0x58, 0x4C, 0x46, 0x43, 0x46, 0x4C, 0x58, 0x70, };
+#define leftArrowHighlight_width 4
+#define leftArrowHighlight_height 7
+const unsigned char leftArrowHighlightBits[] PROGMEM = {
+  0x08, 0x0C, 0x0E, 0x0F, 0x0E, 0x0C, 0x08, };
+#define rightArrow_width 7
+#define rightArrow_height 9
+const unsigned char rightArrowBits[] PROGMEM = {
+  0x07, 0x0D, 0x19, 0x31, 0x61, 0x31, 0x19, 0x0D, 0x07, };
+#define rightArrowHighlight_width 4
+#define rightArrowHighlight_height 7
+const unsigned char rightArrowHighlightBits[] PROGMEM = {
+  0x01, 0x03, 0x07, 0x0F, 0x07, 0x03, 0x01, };
 #define  digit_0_width 16
 #define  digit_0_height 28
 const unsigned char  digit_0_bits[] PROGMEM  = {
@@ -193,7 +212,4 @@ const unsigned char digit_9_bits[] PROGMEM  = {
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0xFE,
     0x00, 0xFE, 0x1F, 0xFE, 0x3F, 0xFE, 0x3F, 0xFE, 0x3F, 0xFE, 0xFF, 0xFF,
     0xFF, 0x7F, 0xFF, 0x3F, 0xFF, 0x1F, 0xFF, 0x0F, };
-
-
-
 #endif

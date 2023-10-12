@@ -17,7 +17,7 @@ enum timeMode {
 };
 
 unsigned long lastSaveTime = 0; // Variable to store the last time data was saved
-const unsigned long saveInterval = 1000; // Save data every 1 seconds (in milliseconds)
+const unsigned long saveInterval = 45000; // Save data every 5 seconds (in milliseconds)
 
 // Array of the digits used in the speedometer
 const int lengthSpeedometerDigits = 10;
@@ -36,9 +36,8 @@ const unsigned char* speedometerDigits[lengthSpeedometerDigits] = {
 
 // Button/switch integers
 int modeSwitchButton; // Mode select button
-/*int button2 = 5;
-int buttonUp = 4;   Debugging buttons
-int buttonDown = 3;*/
+// int buttonUp = 4; // arrow up button test
+// int buttonDown = 3; // arrow down button test
 int stateBattery = 0;
 int stateHighlight = 0;
 int oldHighlight = 0;
@@ -68,32 +67,50 @@ int elapsedTimeUpdateMillis = 0;
 unsigned long previousTimeUpdateMillis = 0;
 float percentageOfSecondElapsed = 0;
 
-bool directionIO;
+bool directionForwBack;
+bool directionLeftRight;
+
+/* ================= Debugging variables ================ */
+int testingDelay = 0;
+int testingState = 0;
+int testHighlightModeState = 0;
+int testBatteryBarState = 0;
+int testArrowHighlight = 0;
+
+unsigned long testPreviousMillis = 0;
+const long testInterval = 100;  // Interval in milliseconds (adjust as needed)
 
 int readInt(int address) {
   return word(EEPROM.read(address), EEPROM.read(address + 1));
 }
 
-void setDirection(bool newDirection) {
-  directionIO = newDirection;
+void setForwBackDirection(bool newForwBackDirection) {
+  directionForwBack = newForwBackDirection;
 }
 
-void initIOModule(int _modeSwitchButton, bool initDirection) {
+void setLeftRightDirection(bool newLeftRightDirection){
+  directionLeftRight = newLeftRightDirection;
+}
+
+void initIOModule(int _modeSwitchButton, bool initForwBackDirection, bool initLeftRightDirection, bool debug) {
   modeSwitchButton = _modeSwitchButton;
-  setDirection(initDirection);
+  setForwBackDirection(initForwBackDirection);
+  setLeftRightDirection(initLeftRightDirection);
   u8g2.setColorIndex(1);
   u8g2.setFont(u8g2_font_freedoomr10_tu);
   u8g2.begin(); // begin u8g2 library
   u8g2.setBitmapMode(1);
   pinMode(modeSwitchButton, INPUT_PULLUP);
   // pinMode(A0, INPUT); Potentiometer, maybe for debug
-  /* pinMode(button2, INPUT_PULLUP); // Other buttons for Debug
-  pinMode(buttonUp, INPUT_PULLUP);
+  /*pinMode(buttonUp, INPUT_PULLUP);
   pinMode(buttonDown, INPUT_PULLUP); */
   // Start at the saved time values
   hours = readInt(Hours);
   minutes = readInt(Minutes);
   seconds = readInt(Seconds);
+  if(debug = true){
+    testBitmaps();
+  }
 }
 
 void showTime() {
@@ -114,7 +131,7 @@ void showTime() {
     hours = 1;
   }
   elapsedTimeUpdateMillis = currentMillis - previousTimeUpdateMillis;
-  // Check if1000ms, 1 second, has been elapsed
+  // Check if 1000ms, 1 second, has been elapsed
   if(elapsedTimeUpdateMillis > 1000) {
     seconds++;
     // It might be possible that more than 1000ms has been elapsed e.g. 1200ms
@@ -132,16 +149,15 @@ void writeToEepromMemory(int address, int value) {
 }
 
 void timeSave() {
-  unsigned long currentTime = millis();
-  if(currentTime - lastSaveTime >= saveInterval) {
-    /* printing for debugging
-    Serial.print("Saved Usage Time: ");
-    Serial.print(savedHours);
+    unsigned long currentTime = millis();
+    if(currentTime - lastSaveTime >= saveInterval) {
+    Serial.print("Saved Usage Time: "); // Save time debugging
+    Serial.print(readInt(Hours));
     Serial.print(" hours, ");
-    Serial.print(savedMinutes);
+    Serial.print(readInt(Minutes));
     Serial.print(" minutes, ");
-    Serial.print(savedSeconds);
-    Serial.println(" seconds");*/
+    Serial.print(readInt(Seconds));
+    Serial.println(" seconds");
     if(hours > readInt(Hours) || minutes > readInt(Minutes) || seconds > readInt(Seconds)) {
       // Update the usage time in EEPROM
       writeToEepromMemory(Hours, hours);
@@ -179,45 +195,6 @@ void modeHighlight() {
         break;
     }
 }
-/* 
-void batteryStatus() {
-  if(digitalRead(button2) == LOW) { // Temporary button switching battery
-    Serial.print("switch\n");
-    delay(100);
-    stateBattery = oldBattery + 1;
-    delay(100);
-  }
-
-  switch (stateBattery) { // switching battery percentages
-    case 1:
-      u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-      oldBattery = stateBattery;
-      break;
-    case 2:
-      u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-      u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
-      oldBattery = stateBattery;
-      break;
-    case 3:
-      u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-      u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
-      u8g2.drawXBMP( 29,  9,  6, 12, batteryStatusBits);
-      oldBattery = stateBattery;
-      break;
-    case 4:
-      u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-      u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
-      u8g2.drawXBMP( 29,  9,  6, 12, batteryStatusBits);
-      u8g2.drawXBMP( 35,  9,  6, 12, batteryStatusBits);
-      oldBattery = 0;
-      break;
-    default:
-      u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-      oldBattery = stateBattery + 1;
-      break;
-  }
-}
-*/
 
 void arrowUp() {
   // Arrow Up Higlight
@@ -227,6 +204,20 @@ void arrowUp() {
 void arrowDown() {
   // Arrow Down Highlight
   u8g2.drawXBMP( 108, 46, 12, 13, arrowDownHighlightBits);
+}
+
+void arrowLeft() {
+  // Arrow Left Highlight
+  u8g2.drawXBMP( 91, 53, 4, 7, leftArrowHighlightBits);
+}
+
+void arrowRight() {
+  // Arrow Right Highlight
+  u8g2.drawXBMP( 98, 53, 4, 7, rightArrowHighlightBits);
+}
+
+void batteryStatus() { // read the battery voltage
+
 }
 
 void drawDisplayBitmaps() {
@@ -243,16 +234,22 @@ void drawDisplayBitmaps() {
         u8g2.drawXBMP((97 - speed_string_lenght * 8) + 18*i, 15, 16, 28, speedometerDigits[speed_string[i] - 48]);
       }
       modeHighlight();
-      // batteryStatus();
+      batteryStatus();
 
-      if(directionIO){
+      if(directionForwBack){
         arrowUp();
       }else{
         arrowDown();
       }
-       
+      
+      if(directionLeftRight){
+        arrowLeft();
+      }else{
+        arrowRight();
+      }
+
       // Display the Time
-      sprintf_P(timeString, PSTR("%2d:%02d:%02d"), readInt(Hours), readInt(Minutes), readInt(Seconds));  
+      sprintf_P(timeString, PSTR("%2d:%02d:%02d"), hours, minutes, seconds);  
       // Draw the timeString
       u8g2.drawStr(73, 12, timeString);
       // Drawing the other non-animated elements
@@ -266,6 +263,102 @@ void drawDisplayBitmaps() {
       u8g2.drawXBMP( 45,  37,  17, 13, slaveModeIconBits);
       u8g2.drawXBMP( 106, 45, 16, 16, arrowDownBits);
       u8g2.drawXBMP( 72, 45, 16, 16, arrowUpBits);
+      u8g2.drawXBMP( 89, 52, 7, 9, leftArrowBits);
+      u8g2.drawXBMP( 97, 52, 7, 9, rightArrowBits);
   }while (u8g2.nextPage()  );
 }
 
+
+/* ============================ Test Function ===========================*/
+
+void testBitmaps() {
+  // put your main code here, to run repeatedly:
+  speed = random(0, 100);
+  itoa(speed, speed_string, 10);
+  speed_string_lenght = strlen(speed_string);
+    u8g2.firstPage();
+    do {
+      for(int i = 0; i < speed_string_lenght; i++) {
+        /* drawing speed_string, subtracting the decimal value of 48 (char value of 0)
+        x coordinate is calculated so that it stays centered (center value - number of digits * (half the pixels of individual digits) ) + width of the character (+2 for spacing)*i
+        */
+        u8g2.drawXBMP((97 - speed_string_lenght * 8) + 18*i, 15, 16, 28, speedometerDigits[speed_string[i] - 48]);
+      }
+      unsigned long testCurrentMillis = millis();  // Get the current time
+      // Check if the specified testInterval has passed
+      if (testCurrentMillis - testPreviousMillis >= testInterval) {
+      testPreviousMillis = testCurrentMillis;  // Save the current time
+      // Increment testingDelay in each iteration
+      testingDelay++;
+      // Check if testingDelay exceeds 25
+      if (testingDelay > 20) {
+      testingDelay = 0; // Reset testingDelay
+        testHighlightModeState++;
+        testBatteryBarState++;
+        testArrowHighlight++;
+      }
+      }
+      switch (testHighlightModeState) {
+          case 0:
+            u8g2.drawXBMP( 0,  35,  21, 29, highlightModeBits);
+            break;
+          case 1:
+            u8g2.drawXBMP( 21,  35,  21, 29, highlightModeBits);
+            break;
+          case 2:
+            u8g2.drawXBMP( 43,  35,  21, 29, highlightModeBits);
+            break;
+          case 3:
+            testHighlightModeState = 0;
+            break;
+        }
+      switch (testBatteryBarState) {
+        case 0:
+          u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 29,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 35,  9,  6, 12, batteryStatusBits);
+          break;
+        case 1:
+          u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 29,  9,  6, 12, batteryStatusBits);
+          break;
+        case 2:
+          u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
+          break;
+        case 3:
+          u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
+          break;
+        case 4:
+          testBatteryBarState = 0;
+          break;
+      }
+      switch (testArrowHighlight) {
+        case 0:
+        u8g2.drawXBMP( 74, 47, 12, 13, arrowUpHighlightBits);
+        u8g2.drawXBMP( 98, 53, 4, 7, rightArrowHighlightBits);
+        break;
+        case 1:
+        u8g2.drawXBMP( 108, 46, 12, 13, arrowDownHighlightBits);
+        u8g2.drawXBMP( 91, 53, 4, 7, leftArrowHighlightBits);
+        break;
+        case 2:
+        testArrowHighlight = 0;
+        break;
+      }
+      u8g2.drawXBMP( 23,  51,  18, 11, automaticBits);
+      u8g2.drawXBMP( 23,  37,  16, 12, automaticIconBits);
+      u8g2.drawXBMP( 14,  6,  36, 18, batteryBits);
+      u8g2.drawXBMP( 89,  45,  15, 6, kmhBits);
+      u8g2.drawXBMP( 2,  51,  16, 11, remoteControlModeBits);
+      u8g2.drawXBMP( 2,  38,  16, 21, remoteControlModeIconBits);
+      u8g2.drawXBMP( 45,  51,  18, 11, slaveModeBits);
+      u8g2.drawXBMP( 45,  37,  17, 13, slaveModeIconBits);
+      u8g2.drawXBMP( 106, 45, 16, 16, arrowDownBits);
+      u8g2.drawXBMP( 72, 45, 16, 16, arrowUpBits);
+      u8g2.drawXBMP( 89, 52, 7, 9, leftArrowBits);
+      u8g2.drawXBMP( 97, 52, 7, 9, rightArrowBits);
+    }while (u8g2.nextPage()  );
+}

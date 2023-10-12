@@ -1,11 +1,12 @@
 #include "OLEDScreen.h"
 #define modeSwitchButton 6
 
-bool direction = true;
+bool directionGasReverse = true; // Forward
+bool directionTurn = true; // Left
 
 void setup(void)
 {
-  initIOModule(modeSwitchButton, direction);
+  initIOModule(modeSwitchButton, directionGasReverse, directionTurn, true);
 }
 
 void loop(void)
@@ -13,6 +14,7 @@ void loop(void)
   showTime();
   timeSave();
   drawDisplayBitmaps();
+  // testBitmaps(); // Debugging/Test
 }
 
 
