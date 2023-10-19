@@ -1,7 +1,6 @@
 #include "OLEDScreen.h"
 
-// U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8 (U8X8_PIN_NONE); //pin used A4 (SDA) and A5 (SCL)
-U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);// [page buffer, size = 128 B]
+U8G2_SSD1306_128X64_NONAME_1_HW_I2C u8g2(U8G2_R0);// [page buffer, size = 128 B] pin used A4 (SDA) and A5 (SCL)
 
 enum addresses {
   Hours = 0,
@@ -163,6 +162,10 @@ void timeSave() {
   }
 }
 
+int getState() {
+  return stateHighlight;
+}
+
 void modeHighlight() {
     if(digitalRead(modeSwitchButton) == LOW) { // Temporary button switching
       Serial.print("switch\n");
@@ -188,6 +191,7 @@ void modeHighlight() {
         oldHighlight = stateHighlight + 1;
         break;
     }
+  
 }
 
 void arrowUp() {

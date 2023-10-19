@@ -11,10 +11,9 @@ void setup(void)
 
 void loop(void)
 {
-  /*showTime();
+  showTime();
   timeSave();
-  drawDisplayBitmaps();*/
-  testBitmaps(); // Debugging/Test
+  drawDisplayBitmaps();
 }
 
 
