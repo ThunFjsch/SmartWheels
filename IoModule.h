@@ -2,24 +2,17 @@
 #define  IOModule_H
 #include <U8g2lib.h>
 #include <Arduino.h>
-#include <EEPROM.h>
 
-/* =============================== Time System ================================= */
-void showTime();
-void timeSave();
 /* =============================== Initialize ================================= */
-void setDirection();
-void initIOModule(int _modeSwitchButton, bool initForwBackDirection, bool initLeftRightDirection, bool debug);
+void initIOModule();
+/* =============================== Non-animated Icons ================================= */
+void drawStaticElements();
 /* =============================== Animated Icons ================================= */
 void modeHighlight();
-void arrowUp();
-void arrowDown();
-void arrowLeft();
-void arrowRight();
-int getState();
-void batteryStatus();
-/* =============================== Non-animated Icons ================================= */
-void drawDisplayBitmaps();
+int getSpeedStringLength(int speed);
+void drawSpeed(int speed);
+void drawDirections(bool directionForwBack, bool directionLeftRight);
+void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int carTime[2]);
 /* =============================== Testing Functions ================================= */
 void testBitmaps();
 /* =============================== Bitmaps ================================= */

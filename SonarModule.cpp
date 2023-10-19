@@ -40,11 +40,11 @@ void updatedSonarDistance(){
 }
 
 //Function returns updated front reading in cm. 
-float GetAllFrontDistance(){
+float getAllFrontDistance(){
   return frontDistances[2];
 }
 //Function returns updataed back raeding in cm.
-float GetBackDistance(){
+float getBackDistance(){
   return backDistance;
 }
 
