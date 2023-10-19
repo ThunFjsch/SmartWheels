@@ -1,7 +1,7 @@
 #include "SonarModule.h"
 #include <Arduino.h>
 
-int trigPin echoPinBack, echoPinCenter, echoPinLeft, echoPinRight;
+int trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight;
 float backDistance = 0;
 float frontDistances[2];
 

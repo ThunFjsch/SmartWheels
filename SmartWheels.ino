@@ -4,6 +4,10 @@
 
 // Pin IO Mode definition
 #define modeSwitchButton 6
+// these arent used in the codebase but are the default pins for the OLED library
+// These pins are utilised in line 4 in the OLEDScreen.cpp
+#define serialDataOLED A4
+#define serialClockOLED A5
 
 // Pin Motor definition
 #define leftMotorPinSide 8    // is connected with Inverter Input A1
