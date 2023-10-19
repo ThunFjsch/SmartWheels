@@ -17,7 +17,7 @@ enum timeMode {
 };
 
 unsigned long lastSaveTime = 0; // Variable to store the last time data was saved
-const unsigned long saveInterval = 45000; // Save data every 5 seconds (in milliseconds)
+const unsigned long saveInterval = 45000; // Save data every 45 seconds (in milliseconds)
 
 // Array of the digits used in the speedometer
 const int lengthSpeedometerDigits = 10;
@@ -36,12 +36,8 @@ const unsigned char* speedometerDigits[lengthSpeedometerDigits] = {
 
 // Button/switch integers
 int modeSwitchButton; // Mode select button
-// int buttonUp = 4; // arrow up button test
-// int buttonDown = 3; // arrow down button test
-int stateBattery = 0;
 int stateHighlight = 0;
 int oldHighlight = 0;
-int oldBattery = 0;
 
 // Speed intergers
 int speed = 0;
@@ -67,6 +63,7 @@ int elapsedTimeUpdateMillis = 0;
 unsigned long previousTimeUpdateMillis = 0;
 float percentageOfSecondElapsed = 0;
 
+// Boolean for directions
 bool directionForwBack;
 bool directionLeftRight;
 
@@ -79,6 +76,7 @@ int testArrowHighlight = 0;
 
 unsigned long testPreviousMillis = 0;
 const long testInterval = 100;  // Interval in milliseconds (adjust as needed)
+/* ================= Debugging variables ================ */
 
 int readInt(int address) {
   return word(EEPROM.read(address), EEPROM.read(address + 1));
@@ -101,10 +99,6 @@ void initIOModule(int _modeSwitchButton, bool initForwBackDirection, bool initLe
   u8g2.begin(); // begin u8g2 library
   u8g2.setBitmapMode(1);
   pinMode(modeSwitchButton, INPUT_PULLUP);
-  // pinMode(A0, INPUT); Potentiometer, maybe for debug
-  /*pinMode(buttonUp, INPUT_PULLUP);
-  pinMode(buttonDown, INPUT_PULLUP); */
-  // Start at the saved time values
   hours = readInt(Hours);
   minutes = readInt(Minutes);
   seconds = readInt(Seconds);
@@ -315,18 +309,18 @@ void testBitmaps() {
       switch (testBatteryBarState) {
         case 0:
           u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-          u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
-          u8g2.drawXBMP( 29,  9,  6, 12, batteryStatusBits);
-          u8g2.drawXBMP( 35,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 24,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 31,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 38,  9,  6, 12, batteryStatusBits);
           break;
         case 1:
           u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-          u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
-          u8g2.drawXBMP( 29,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 24,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 31,  9,  6, 12, batteryStatusBits);
           break;
         case 2:
           u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
-          u8g2.drawXBMP( 23,  9,  6, 12, batteryStatusBits);
+          u8g2.drawXBMP( 24,  9,  6, 12, batteryStatusBits);
           break;
         case 3:
           u8g2.drawXBMP( 17,  9,  6, 12, batteryStatusBits);
