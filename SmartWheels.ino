@@ -3,7 +3,7 @@
 #include "SonarModule.h"
 
 // Pin IO Mode definition
-#define modeSwitchButton 6
+#define modeSwitchButton A3
 // these arent used in the codebase but are the default pins for the OLED library
 // These pins are utilised in line 4 in the OLEDScreen.cpp
 #define serialDataOLED A4
@@ -27,15 +27,15 @@ float FrontDistances[2]; //Front distance raeding from three sensors
   
 bool directionGasReverse = true; // Forward is true. Backward is false
 bool directionTurn = true; // Left is true. False is right
-bool debug = true;
+bool debug = false;
 
 void setup() {
   Serial.begin(9600);
   // Here the initialisation of the MotorModule is called
   // the true will execute the Debug code
-  initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, debug );
+  //initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, debug );
   initIOModule(modeSwitchButton, directionGasReverse, directionTurn, debug );
-  initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
+  //initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
 }
 
 void loop() {
@@ -44,7 +44,9 @@ void loop() {
   drawDisplayBitmaps();
   if(debug){
     testBitmaps();
-    sonarDebug();
-    
+    //sonarDebug();
   }
+
+  int x = getState();
+  Serial.println(x);
 }

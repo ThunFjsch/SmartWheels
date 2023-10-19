@@ -214,6 +214,10 @@ void batteryStatus() { // read the battery voltage
 
 }
 
+int getState(){
+  return stateHighlight;
+}
+
 void drawDisplayBitmaps() {
   // Potentiometer setup for testing the speedometer
   speed = map(analogRead(A0), 0, 1023, 0, 100); // Converting analog readings from 0-1023 to 0-100

@@ -16,6 +16,7 @@ void arrowUp();
 void arrowDown();
 void arrowLeft();
 void arrowRight();
+int getState();
 void batteryStatus();
 /* =============================== Non-animated Icons ================================= */
 void drawDisplayBitmaps();
