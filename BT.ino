@@ -10,21 +10,31 @@ void setup()
 
 void loop()
 {
-int i;
+int input;
   
   if (mySerial.available())
   {
-    i=mySerial.read();
+    input = mySerial.read();
     Serial.println("DATA RECEIVED:");
-    switch(i)
+    switch(input)
      {
-        case '1':
-              digitalWrite(ledpin, 1);
-              Serial.println("led on");
-              break;
         case '0':
-              digitalWrite(ledpin, 0);
-              Serial.println("led off");
+              Serial.println("mode ++");
+              break;
+        case '1':
+              Serial.println("left");
+              break;
+        case '2':
+              Serial.println("forward");
+              break;
+        case '3':
+              Serial.println("right");
+              break;
+        case '4':
+              Serial.println("reverse");
+              break;
+        case '5':
+              Serial.println("reset movement");
               break;
     }
   }
