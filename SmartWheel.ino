@@ -1,6 +1,6 @@
-#include <SoftwareSerial.h>                                //defining RXD and TXD pin to D1 & D2
-#define btTXD 1                                             
-#define btRXD 2                                             
+#include <SoftwareSerial.h>                                //defining RXD and TXD pin to D12 & D13
+#define btTXD 12                                             
+#define btRXD 13                                             
 
 SoftwareSerial mySerial(btTXD,btRXD);                      //setting up communication with the chip
 
