@@ -2,7 +2,7 @@
 #define SonarModule_H
 #include <Arduino.h>
 
-void initSonarModule(int _trigPinBack, int _echoPinBack, int _trigPinCenter, int _echoPinCenter, int _trigPinLeft, int _echoPinLeft, int _trigPinRight, int _echoPinRight);
+void initSonarModule(int _trigPin, int _echoPinBack, int _echoPinCenter, int _echoPinLeft, int _echoPinRight);
 void updatedSonarDistance();
 float GetAllFrontDistance();
 float GetBackDistance();
