@@ -6,6 +6,7 @@ void initSonarModule(int _trigPin, int _echoPinBack, int _echoPinCenter, int _ec
 void updatedSonarDistance();
 float GetAllFrontDistance();
 float GetBackDistance();
+bool isSomethingFront(int distance);
 void TestingDistanceAndAccuracy();
 void sonarDebug();
 

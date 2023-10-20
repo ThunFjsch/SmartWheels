@@ -2,7 +2,7 @@
 #define IRModule_H
 #include <Arduino.h>
 
-void initIRModule(bool _IRFront, bool _IRLeft, bool _IRRight);
+void initIRModule(int _IRFront, int _IRLeft, int _IRRight);
 void updatedIRDetection();
 bool GetFrontIR();
 bool GetLeftIR();

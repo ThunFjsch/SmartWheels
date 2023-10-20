@@ -3,13 +3,14 @@
 #include "SonarModule.h"
 #include "timeModule.h"
 #include "melody.h"
+#include "IRModule.h"
 
 // Pin Indicator definition
 #define rightIndicatorPin A1
 #define leftIndicatorPin A2
 
 // buzzer definition
-#define buzzer 3  // TODO play startup sound and indicate object behin while in reverse
+#define buzzer 3  // TODO: indicate object behind while in reverse
 
 // Pin IO Mode definition
 #define modeSwitchButton A3
@@ -35,6 +36,11 @@
 // BT pin definition
 #define btRxd 12  // currently not used
 #define btTxd 13  // currently not used
+
+// IR Module definitions
+#define irFront A0
+#define irLeft 1
+#define irRight 2
   
 float BackDistance = 0; //Back distance reading
 float FrontDistances[2]; //Front distance raeding from three sensors
@@ -57,19 +63,21 @@ bool stringComplete = false;  // TODO: Remove this when Bluetooth Module is impl
 String inputString = "";  // TODO: Remove this when Bluetooth Module is implemented
 
 void setup() {
-  //playStartup(buzzer);
   Serial.begin(9600);
   initTimeModule();
   initIOModule();
   initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, rightIndicatorPin, leftIndicatorPin, debug);
   initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
+  initIRModule(irFront, irLeft, irRight);
   pinMode(modeSwitchButton, INPUT_PULLUP);
+  //playStartup(buzzer);
 }
 
 void loop() {
-  if(debug){
-    testBitmaps();
-    //sonarDebug();
+  if(true){
+    //testBitmaps();
+    sonarDebug();
+    //TestingIRDetectionAccuracy();
   }
 
   // Time
@@ -83,27 +91,25 @@ void loop() {
   // Draw Display
   drawDisplay(state, speed, directionForwBack, directionTurn, getCarTime());  // TODO: Fix the time Display, currently wrong time like 0:97:00 is being displayed
 
-  // Sonar needs to be updated each cycle
+  // Update Sensors
   updatedSonarDistance();
+  updatedIRDetection();
 
   // car state logic
-  switch(state){
-    case 0:
-      Serial.println("RC Mode");
-      simulateBT();
-      break;
-    case 1:
-      Serial.println("AT Mode");
-      if(!isSomethingFront(15)){
-        
-      }
-      break;
-    case 2:
-      if(isSomethingFront(15)){
-        
-      }
-      Serial.println("SM Mode");
-  }
+  // switch(state){
+  //   case 0:
+  //     Serial.println("RC Mode");
+  //     simulateBT();
+  //     break;
+  //   case 1:
+  //     //if(!isSomethingFront(15)){}
+  //     Serial.println("AT Mode");
+      
+  //     break;
+  //   case 2:
+  //     //if(isSomethingFront(15)){}
+  //     Serial.println("SM Mode");
+  // }
 }
 
 void updateStateButton(){

@@ -2,11 +2,11 @@
 #include <Arduino.h>
 
 //leds for testing IR sensor
-bool IRFront, IRLeft, IRRight;
+int IRFront, IRLeft, IRRight;
 //Reading from IR sensors are saved in these variables
 bool ReadingIRF, ReadingIRL, ReadingIRR; // IRF= IR Front, IRL= IR Left, IRR = IR Right
 
-void initIRModule(bool _IRFront, bool _IRLeft, bool _IRRight){
+void initIRModule(int _IRFront, int _IRLeft, int _IRRight){
   IRFront = _IRFront;
   IRLeft = _IRLeft;
   IRRight = _IRRight; 
@@ -38,8 +38,8 @@ void TestingIRDetectionAccuracy(){
   Serial.println(ReadingIRF);
   Serial.println(ReadingIRL);
   Serial.println(ReadingIRR);
-  delay(50);
 }
+
 void IRDebug(){
   TestingIRDetectionAccuracy();
 }
