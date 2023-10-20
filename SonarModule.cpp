@@ -33,10 +33,9 @@ void updatedSonarDistance(){
   float distanceCalc =  0.034 / 2; //distance in cm
   
   frontDistances[0] = pulseIn(echoPinLeft, HIGH) * distanceCalc;
-  frontDistances[1] = pulseIn(echoPinCenter, HIGH) * distanceCalc ; 
+  frontDistances[1] = pulseIn(echoPinCenter, HIGH) * distanceCalc; 
   frontDistances[2] = pulseIn(echoPinRight, HIGH) * distanceCalc;
   backDistance = pulseIn(echoPinBack, HIGH) * distanceCalc;
-  
 }
 
 //Function returns updated front reading in cm. 
@@ -46,6 +45,15 @@ float getAllFrontDistance(){
 //Function returns updataed back raeding in cm.
 float getBackDistance(){
   return backDistance;
+}
+
+bool isSomethingFront(int distance){
+  for(int i = 0; i < 3;){
+    if(frontDistance[i] < distance){
+      return true;
+    }
+  }
+  return false;
 }
 
 //Function to test accuracy of sonar sensors

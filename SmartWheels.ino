@@ -2,6 +2,7 @@
 #include "IoModule.h"
 #include "SonarModule.h"
 #include "timeModule.h"
+#include "melody.h"
 
 // Pin Indicator definition
 #define rightIndicatorPin A1
@@ -25,11 +26,15 @@
 #define enablePWMPinRight 5  // is connected with white wire
 
 //Sonar module pins
-//#define trigPin 0
-//#define echoPinBack 1
-//#define echoPinCenter 3
-//#define echoPinLeft 5
-//#define echoPinRight 7
+#define trigPin 3
+#define echoPinBack 8
+#define echoPinCenter 9
+#define echoPinLeft 10
+#define echoPinRight 11
+
+// BT pin definition
+#define btRxd 12  // currently not used
+#define btTxd 13  // currently not used
   
 float BackDistance = 0; //Back distance reading
 float FrontDistances[2]; //Front distance raeding from three sensors
@@ -52,11 +57,12 @@ bool stringComplete = false;  // TODO: Remove this when Bluetooth Module is impl
 String inputString = "";  // TODO: Remove this when Bluetooth Module is implemented
 
 void setup() {
+  //playStartup(buzzer);
   Serial.begin(9600);
   initTimeModule();
   initIOModule();
   initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, rightIndicatorPin, leftIndicatorPin, debug);
-  //initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
+  initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
   pinMode(modeSwitchButton, INPUT_PULLUP);
 }
 
@@ -77,6 +83,9 @@ void loop() {
   // Draw Display
   drawDisplay(state, speed, directionForwBack, directionTurn, getCarTime());  // TODO: Fix the time Display, currently wrong time like 0:97:00 is being displayed
 
+  // Sonar needs to be updated each cycle
+  updatedSonarDistance();
+
   // car state logic
   switch(state){
     case 0:
@@ -85,8 +94,14 @@ void loop() {
       break;
     case 1:
       Serial.println("AT Mode");
+      if(!isSomethingFront(15)){
+        
+      }
       break;
     case 2:
+      if(isSomethingFront(15)){
+        
+      }
       Serial.println("SM Mode");
   }
 }
@@ -102,6 +117,10 @@ void updateStateButton(){
       }
     }
   }
+}
+
+void autonomousMode(){
+
 }
 
 void simulateBT(){  // TODO: Remove this when Bluetooth Module is implemented
@@ -145,6 +164,7 @@ void simulateBT(){  // TODO: Remove this when Bluetooth Module is implemented
     }
     else if(inputString == " \n"){
       stopMotors();
+      speed = 0;
     }
     else {
       // if invalid input resets inputString
