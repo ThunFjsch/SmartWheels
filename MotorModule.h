@@ -2,7 +2,7 @@
 #define  MotorModule_H
 #include <Arduino.h>
 #include <time.h>
-	void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft, int _enablePWMRight, bool debug);
+	void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft, int _enablePWMRight, int _rightIndicator, int _leftIndicator, bool debug);
 	
 	/* ========================= Speed/Direction functions ================================= */
 	void setAllMotorSpeed(int newSpeed);

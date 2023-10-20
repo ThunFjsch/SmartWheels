@@ -2,19 +2,20 @@
 #include <Arduino.h>
 #include "MotorModule.h"
 
-int leftMotorSide;   // is connected to 1A on the Inverter
-int rightMotorSide;   // is connected to 2A on the Inverter
-int enablePWMLeft;   // is connected with blue wire
-int enablePWMRight;  // is connected with white wire
+int leftMotorSide, rightMotorSide, enablePWMLeft, enablePWMRight, rightIndicator, leftIndicator;
+bool isLeftIndicatorHigh = false;
+bool isRightIndicatorHigh = false;
 
 // the first 4 variable are the Pins for the MotorModule
 // debug will allow the run of tests
-void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft, int _enablePWMRight, bool debug) {
+void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft, int _enablePWMRight, int _rightIndicator, int _leftIndicator, bool debug) {
   // Sets the given PinLayout to global variables
   leftMotorSide = _leftMotorSide;
   rightMotorSide = _rightMotorSide;
   enablePWMLeft = _enablePWMLeft;
   enablePWMRight = _enablePWMRight;
+  rightIndicator = _rightIndicator;
+  leftIndicator = _leftIndicator;
    
   // Setup HBridge Pins
   pinMode(leftMotorSide, OUTPUT);
@@ -23,6 +24,10 @@ void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft
   digitalWrite(rightMotorSide, LOW);
   pinMode(enablePWMLeft, OUTPUT);
   pinMode(enablePWMRight, OUTPUT);
+  pinMode(rightIndicator, OUTPUT);
+  digitalWrite(rightIndicator, LOW);
+  pinMode(leftIndicator, OUTPUT);
+  digitalWrite(leftIndicator, LOW);
 
   // Debug & testing
   if(debug){
@@ -47,6 +52,10 @@ void stopMotors(){
 void setAllMotorSpeed(int newSpeed){
   analogWrite(enablePWMLeft, newSpeed);
   analogWrite(enablePWMRight, newSpeed);
+  digitalWrite(rightIndicator, LOW);
+  digitalWrite(leftIndicator, LOW);
+  isLeftIndicatorHigh = false;
+  isRightIndicatorHigh = false;
 }
 
 // Only changes the speed in the left motor side
@@ -80,15 +89,23 @@ void setMotorDirection(bool direction){
 /* ========================= Steering functions ================================= */
 
 // Sets the leftMotorForce to some speed and sets the right motor to 0
-void steerLeftSimple(int leftMotorForce){
+void steerRightSimple(int leftMotorForce){
   setLeftMotorSpeed(leftMotorForce);
   setRightMotorSpeed(0);
+  digitalWrite(rightIndicator, HIGH);
+  digitalWrite(leftIndicator, LOW);
+  isLeftIndicatorHigh = false;
+  isRightIndicatorHigh = true;
 }
 
 // Sets the rightMotorForce to some speed and sets the right motor to 0
-void steerRightSimple(int rightMotorForce){
+void steerLeftSimple(int rightMotorForce){
   setRightMotorSpeed(rightMotorForce);
   setLeftMotorSpeed(0);
+  digitalWrite(leftIndicator, HIGH);
+  digitalWrite(rightIndicator, LOW);
+  isLeftIndicatorHigh = true;
+  isRightIndicatorHigh = false;
 }
 
 // Complex steering takes the individual speeds for both sides
@@ -96,6 +113,26 @@ void steerRightSimple(int rightMotorForce){
 void complexSteering(int rightMotorForce, int leftMotorForce){
   analogWrite(enablePWMLeft, rightMotorForce);
   analogWrite(enablePWMRight, leftMotorForce);
+}
+
+void toggleIndicatorRight(){
+  if(isRightIndicatorHigh){
+    digitalWrite(rightIndicator, LOW);
+    isRightIndicatorHigh = false;
+  } else {
+    digitalWrite(rightIndicator, HIGH);
+    isRightIndicatorHigh = true;
+  }
+}
+
+void toggleIndicatorLeft(){
+  if(isLeftIndicatorHigh){
+    digitalWrite(leftIndicator, LOW);
+    isLeftIndicatorHigh = false;
+  } else {
+    isLeftIndicatorHigh = true;
+    digitalWrite(leftIndicator, HIGH);
+  }
 }
 
 /* ========================= Testing functions ================================= */
