@@ -4,9 +4,10 @@
 int trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight;
 float backDistance = 0;
 float frontDistances[2];
+float distance;
 
 // This value is important to calculate the clock cycles from the pulse
-#define timeout 8
+#define timeout 2
 
 void initSonarModule(int _trigPin, int _echoPinBack, int _echoPinCenter, int _echoPinLeft, int _echoPinRight){
   
@@ -28,17 +29,16 @@ void initSonarModule(int _trigPin, int _echoPinBack, int _echoPinCenter, int _ec
 //Function gets updated readings of distance  
 void updatedSonarDistance(){
   // updating sonar hardware
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(2);
   digitalWrite(trigPin, LOW);
-
-  //calculation to convert the reading from the sonar sensor into centimeter. 
-  float distanceCalc =  0.034 / 2; //distance in cm
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
   
-  frontDistances[0] = pulseIn(echoPinLeft, HIGH, timeout) * distanceCalc;
-  frontDistances[1] = pulseIn(echoPinCenter, HIGH, timeout) * distanceCalc; 
-  frontDistances[2] = pulseIn(echoPinRight, HIGH, timeout) * distanceCalc;
-  backDistance = pulseIn(echoPinBack, HIGH, timeout) * distanceCalc;
+    //calculation to convert the reading from the sonar sensor into centimeter. 
+  float distanceCalc =  0.034 / 2; //distance in cm
+  distance = pulseIn(9, HIGH) * distanceCalc;
 }
 
 //Function returns updated front reading in cm. 
@@ -61,11 +61,7 @@ bool isSomethingFront(int distance){
 
 //Function to test accuracy of sonar sensors
 void TestingDistanceAndAccuracy(){
-  Serial.println(frontDistances[0]);
-  Serial.println(frontDistances[1]);
-  Serial.println(frontDistances[2]);
-  Serial.println(backDistance);
-  delay(50);
+  Serial.println(distance);
 }
 
 //Function to initiate test

@@ -27,8 +27,8 @@
 #define enablePWMPinRight 5  // is connected with white wire
 
 //Sonar module pins
-#define trigPin 3
-#define echoPinBack 8
+#define trigPin 8
+#define echoPinBack 3
 #define echoPinCenter 9
 #define echoPinLeft 10
 #define echoPinRight 11
@@ -74,7 +74,7 @@ void setup() {
 }
 
 void loop() {
-  if(true){
+  if(false){
     //testBitmaps();
     sonarDebug();
     //TestingIRDetectionAccuracy();
@@ -92,8 +92,22 @@ void loop() {
   drawDisplay(state, speed, directionForwBack, directionTurn, getCarTime());  // TODO: Fix the time Display, currently wrong time like 0:97:00 is being displayed
 
   // Update Sensors
-  updatedSonarDistance();
-  updatedIRDetection();
+  //updatedSonarDistance();
+  //updatedIRDetection();
+
+  // updating sonar hardware
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  
+    //calculation to convert the reading from the sonar sensor into centimeter. 
+  float distanceCalc =  0.034 / 2; //distance in cm
+  float distance = pulseIn(echoPinCenter, HIGH) * distanceCalc;
+
+  Serial.println(distance);
 
   // car state logic
   // switch(state){
