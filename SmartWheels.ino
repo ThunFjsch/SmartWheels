@@ -70,11 +70,11 @@ void setup() {
   initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
   initIRModule(irFront, irLeft, irRight);
   pinMode(modeSwitchButton, INPUT_PULLUP);
-  //playStartup(buzzer);
+  playStartup(buzzer);
 }
 
 void loop() {
-  if(false){
+  if(true){
     //testBitmaps();
     sonarDebug();
     //TestingIRDetectionAccuracy();
@@ -92,22 +92,8 @@ void loop() {
   drawDisplay(state, speed, directionForwBack, directionTurn, getCarTime());  // TODO: Fix the time Display, currently wrong time like 0:97:00 is being displayed
 
   // Update Sensors
-  //updatedSonarDistance();
+  updatedSonarDistance();
   //updatedIRDetection();
-
-  // updating sonar hardware
-  digitalWrite(trigPin, LOW);
-  delayMicroseconds(2);
-  // Sets the trigPin on HIGH state for 10 micro seconds
-  digitalWrite(trigPin, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  
-    //calculation to convert the reading from the sonar sensor into centimeter. 
-  float distanceCalc =  0.034 / 2; //distance in cm
-  float distance = pulseIn(echoPinCenter, HIGH) * distanceCalc;
-
-  Serial.println(distance);
 
   // car state logic
   // switch(state){
