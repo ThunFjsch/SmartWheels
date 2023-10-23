@@ -1,0 +1,2 @@
+void initAutonomous();
+void runAutonomous();

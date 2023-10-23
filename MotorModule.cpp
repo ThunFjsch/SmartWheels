@@ -8,7 +8,13 @@ bool isRightIndicatorHigh = false;
 
 // the first 4 variable are the Pins for the MotorModule
 // debug will allow the run of tests
-void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft, int _enablePWMRight, int _rightIndicator, int _leftIndicator, bool debug) {
+void initMotorModule(int _leftMotorSide, 
+                      int _rightMotorSide,
+                      int _enablePWMLeft, 
+                      int _enablePWMRight, 
+                      int _rightIndicator, 
+                      int _leftIndicator, 
+                      bool debug) {
   // Sets the given PinLayout to global variables
   leftMotorSide = _leftMotorSide;
   rightMotorSide = _rightMotorSide;

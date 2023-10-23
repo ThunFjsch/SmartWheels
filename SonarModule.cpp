@@ -33,7 +33,8 @@ void initSonarModule(int _trigPin, int _echoPinBack, int _echoPinCenter, int _ec
 
 //calculation to convert the reading from the sonar sensor into centimeter. 
 float calcDistance(unsigned long pulse, int echoPin){
-  return (pulseIn(echoPin, HIGH) * 0.034)/2;
+  Serial.println(pulse / 58.2);
+  return pulse / 58.2;
 }
 
 void triggerPulse(){
@@ -46,16 +47,21 @@ void triggerPulse(){
   digitalWrite(trig, LOW);
 }
 
+// TODO: Change the code according to Towfiqs fix
 //Function gets updated readings of distance  
 void updatedSonarDistance(){
+  Serial.println("echo 1");
   triggerPulse();
-  frontDistances[center] = calcDistance(pulseIn(echoCenter, HIGH, NULL), echoCenter);
+  frontDistances[center] = calcDistance(pulseIn(echoCenter, HIGH), echoCenter);
+  Serial.println("echo 2");
   triggerPulse();
-  frontDistances[left] = calcDistance(pulseIn(echoLeft, HIGH, NULL), echoLeft);
+  frontDistances[left] = calcDistance(pulseIn(echoLeft, HIGH), echoLeft);
   triggerPulse();
-  frontDistances[right] = calcDistance(pulseIn(echoRight, HIGH, NULL), echoRight);
+  Serial.println("echo 3");
+  frontDistances[right] = calcDistance(pulseIn(echoRight, HIGH), echoRight);
   triggerPulse();
-  backDistance = calcDistance(pulseIn(echoBack, HIGH, NULL), echoBack);
+  Serial.println("echo 4");
+  backDistance = calcDistance(pulseIn(echoBack, HIGH), echoBack);
 }
 
 //Function returns updated front reading in cm. 
@@ -67,12 +73,19 @@ float getBackDistance(){
   return backDistance;
 }
 
+// TODO: It is possible that we need to constrain the distance. Because misreadings etc.
 bool isSomethingFront(int distance){
   for(int i = 0; i < 3;){
     if(frontDistances[i] < distance){
       return true;
     }
+    i++;
   }
+  return false;
+}
+
+bool isSomethingInRange(int min, int max){
+  // TODO: implement logic
   return false;
 }
 

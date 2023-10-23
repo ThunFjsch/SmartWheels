@@ -28,9 +28,9 @@
 
 //Sonar module pins
 #define trigPin 8
-#define echoPinBack 3
+#define echoPinBack 12
 #define echoPinCenter 9
-#define echoPinLeft 10
+#define echoPinLeft 7
 #define echoPinRight 11
 
 // BT pin definition
@@ -70,11 +70,11 @@ void setup() {
   initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
   initIRModule(irFront, irLeft, irRight);
   pinMode(modeSwitchButton, INPUT_PULLUP);
-  playStartup(buzzer);
+  //playStartup(buzzer);
 }
 
 void loop() {
-  if(true){
+  if(false){
     //testBitmaps();
     sonarDebug();
     //TestingIRDetectionAccuracy();
@@ -96,20 +96,20 @@ void loop() {
   //updatedIRDetection();
 
   // car state logic
-  // switch(state){
-  //   case 0:
-  //     Serial.println("RC Mode");
-  //     simulateBT();
-  //     break;
-  //   case 1:
-  //     //if(!isSomethingFront(15)){}
-  //     Serial.println("AT Mode");
+  switch(state){
+    case 0:
+      Serial.println("RC Mode");
+      simulateBT();
+      break;
+    case 1:
+      //if(!isSomethingFront(15)){}
+      Serial.println("AT Mode");
       
-  //     break;
-  //   case 2:
-  //     //if(isSomethingFront(15)){}
-  //     Serial.println("SM Mode");
-  // }
+      break;
+    case 2:
+      //if(isSomethingFront(15)){}
+      Serial.println("SM Mode");
+  }
 }
 
 void updateStateButton(){
