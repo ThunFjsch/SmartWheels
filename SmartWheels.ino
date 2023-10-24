@@ -55,7 +55,7 @@ bool debug = false;
 unsigned long currentMillis = 0;
 
 // button debounce
-int buttonDebounceTime = 400;
+int buttonDebounceTime = 5;
 int elapsedButtonDebounceTime = 0;
 
 // Communication values for Mockup Bluetooth
@@ -114,15 +114,15 @@ void loop() {
 
 void updateStateButton(){
   if(digitalRead(modeSwitchButton) == LOW) { // Temporary button switching
-    if(currentMillis - elapsedButtonDebounceTime >= buttonDebounceTime){
-      Serial.println(currentMillis - elapsedButtonDebounceTime);
+    if(elapsedButtonDebounceTime >= buttonDebounceTime){
       state++;
-      elapsedButtonDebounceTime = currentMillis;
+      elapsedButtonDebounceTime = 0;
       if(state > 2){
         state = 0;
       }
     }
   }
+  elapsedButtonDebounceTime++;
 }
 
 void autonomousMode(){
