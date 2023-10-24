@@ -4,7 +4,9 @@
 #include "timeModule.h"
 #include "melody.h"
 #include "IRModule.h"
-
+#include "Driving.h"
+#include "FollowerDriving.h"
+#include "AutonomousDriving.h"
 // Pin Indicator definition
 #define rightIndicatorPin A1
 #define leftIndicatorPin A2
@@ -100,15 +102,18 @@ void loop() {
     case 0:
       Serial.println("RC Mode");
       simulateBT();
+      directionTurn = getManualDirection();
       break;
     case 1:
       //if(!isSomethingFront(15)){}
       Serial.println("AT Mode");
-      
+      runAutonomous();
+      directionTurn = getDrivingDirection();
       break;
     case 2:
-      //if(isSomethingFront(15)){}
       Serial.println("SM Mode");
+      runFollower();
+      directionTurn = getDrivingDirection();
   }
 }
 
