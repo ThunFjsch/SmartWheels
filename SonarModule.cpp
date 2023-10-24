@@ -85,8 +85,26 @@ bool isSomethingFront(int distance){
 }
 
 bool isSomethingInRange(int min, int max){
-  // TODO: implement logic
+  for(int i = 0; i < 3;){
+    if(frontDistances[i] > min && frontDistances[i] < max){
+      return true;
+    }
+    i++;
+  }
   return false;
+}
+
+// is being used in the context of range based detirmination
+bool toFarOrTooClose(){
+  for(int i = 0; i < 3;){
+    if(frontDistances[i] < min){
+      return true;  // true for under minimum range
+    }
+    if( frontDistances[i] > max){
+      return false; // false for over maximum range
+    }
+    i++;
+  }
 }
 
 //Function to test accuracy of sonar sensors
