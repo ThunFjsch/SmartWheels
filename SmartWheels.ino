@@ -89,10 +89,10 @@ void loop() {
   updateStateButton();  
 
   // Draw Display
-  drawDisplay(state, speed, directionForwBack, directionTurn, getCarTime());  // TODO: Fix the time Display, currently wrong time like 0:97:00 is being displayed
+  drawDisplay(state, speed, directionForwBack, directionTurn, getHours(), getMinutes(), getSeconds());  // TODO: Fix the time Display, currently wrong time like 0:97:00 is being displayed
 
   // Update Sensors
-  updatedSonarDistance();
+  //updatedSonarDistance();
   //updatedIRDetection();
 
   // car state logic

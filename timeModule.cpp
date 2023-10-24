@@ -31,12 +31,16 @@ void initTimeModule(){
   seconds = readInt(Seconds);
 }
 
-int getCarTime(){
-  int allTimeValues[2];
-  allTimeValues[0] = hours;
-  allTimeValues[1] = minutes;
-  allTimeValues[2] = seconds;
-  return allTimeValues;
+int getHours() {
+  return hours;
+}
+
+int getMinutes() {
+  return minutes;
+}
+
+int getSeconds() {
+  return seconds;
 }
 
 void updateCarTime(unsigned long currentMillis){
@@ -76,6 +80,13 @@ void writeToEepromMemory(int address, int value){
 void saveCarTime(){
   unsigned long currentTime = millis();
   if(currentTime - lastSaveTime >= saveInterval){
+    Serial.print("Saved Usage Time: "); // Save time debugging
+    Serial.print(readInt(Hours));
+    Serial.print(" hours, ");
+    Serial.print(readInt(Minutes));
+    Serial.print(" minutes, ");
+    Serial.print(readInt(Seconds));
+    Serial.println(" seconds");
     if(hours > readInt(Hours) || minutes > readInt(Minutes) || seconds > readInt(Seconds)){
       // Update the usage time in EEPROM
       writeToEepromMemory(Hours, hours);

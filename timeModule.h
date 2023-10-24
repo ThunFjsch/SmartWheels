@@ -9,6 +9,7 @@ void initTimeModule();
 void updateCarTime(unsigned long currentMillis);
 void writeToEepromMemory(int address, int value);
 void saveCarTime();
-int getCarTime();
-
+int getHours();
+int getMinutes();
+int getSeconds();
 #endif

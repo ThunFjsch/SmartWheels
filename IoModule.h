@@ -12,7 +12,7 @@ void modeHighlight();
 int getSpeedStringLength(int speed);
 void drawSpeed(int speed);
 void drawDirections(bool directionForwBack, bool directionLeftRight);
-void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int carTime[2]);
+void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int getHours, int getMinutes, int getSeconds);
 /* =============================== Testing Functions ================================= */
 void testBitmaps();
 /* =============================== Bitmaps ================================= */

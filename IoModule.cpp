@@ -93,7 +93,7 @@ void drawDirections(bool directionForwBack, int directionLeftRight){
   }
 }
 
-void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int carTime[]){
+void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds){
   oledDisplay.firstPage();
   do {
     drawSpeed(speed);
@@ -104,7 +104,7 @@ void drawDisplay(int state, int speed, bool directionForwBack, int directionLeft
     // Display the Time
     // Char array for the time being showed on the display
     char timeString[9];
-    sprintf_P(timeString, PSTR("%2d:%02d:%02d"), carTime[HOURS], carTime[MINUTES], carTime[SECONDS]);  
+    sprintf_P(timeString, PSTR("%2d:%02d:%02d"), hours, minutes, seconds);  
     // Draw the timeString
     oledDisplay.drawStr(73, 12, timeString);
     // Drawing the other non-animated elements
