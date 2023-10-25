@@ -29,11 +29,10 @@
 #define enablePWMPinRight 5  // is connected with white wire
 
 //Sonar module pins
-#define trigPin 8
-#define echoPinBack 12
-#define echoPinCenter 9
-#define echoPinLeft 7
-#define echoPinRight 11
+#define trigPin 7
+#define echoPinCenter 5
+#define echoPinLeft 6
+#define echoPinRight 4
 
 // BT pin definition
 #define btRxd 12  // currently not used
@@ -69,7 +68,7 @@ void setup() {
   initTimeModule();
   initIOModule();
   initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, rightIndicatorPin, leftIndicatorPin, debug);
-  initSonarModule(trigPin, echoPinBack, echoPinCenter, echoPinLeft, echoPinRight);
+  initSonarModule(trigPin, echoPinCenter, echoPinLeft, echoPinRight);
   initIRModule(irFront, irLeft, irRight);
   pinMode(modeSwitchButton, INPUT_PULLUP);
   //playStartup(buzzer);

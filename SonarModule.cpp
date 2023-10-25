@@ -1,31 +1,30 @@
 #include "SonarModule.h"
 #include <Arduino.h>
 
+
 enum Sensor {
   center = 0,
   left = 1,
   right = 2
 };
 
-int trig, echoBack, echoCenter, echoLeft, echoRight;
-float backDistance;
+int trig, echoCenter, echoLeft, echoRight;
 float frontDistances[2];
 float distance;
+
 
 // This value is important to calculate the clock cycles from the pulse
 #define timeout 2
 
-void initSonarModule(int _trigPin, int _echoPinBack, int _echoPinCenter, int _echoPinLeft, int _echoPinRight){  
+void initSonarModule(int _trigPin, int _echoPinCenter, int _echoPinLeft, int _echoPinRight){  
   // Sets the given PinLayout to global variables
   trig = _trigPin;
-  echoBack = _echoPinBack;
   echoCenter = _echoPinCenter; 
   echoLeft = _echoPinLeft;
   echoRight = _echoPinRight;
 
  //Setup Sonar Pins
   pinMode(trig, OUTPUT);
-  pinMode(echoBack, INPUT);  
   pinMode(echoCenter, INPUT);
   pinMode(echoLeft, INPUT);  
   pinMode(echoRight, INPUT);
@@ -50,27 +49,31 @@ void triggerPulse(){
 // TODO: Change the code according to Towfiqs fix
 //Function gets updated readings of distance  
 void updatedSonarDistance(){
-  Serial.println("echo 1");
-  triggerPulse();
-  frontDistances[center] = calcDistance(pulseIn(echoCenter, HIGH), echoCenter);
-  Serial.println("echo 2");
-  triggerPulse();
-  frontDistances[left] = calcDistance(pulseIn(echoLeft, HIGH), echoLeft);
-  triggerPulse();
-  Serial.println("echo 3");
-  frontDistances[right] = calcDistance(pulseIn(echoRight, HIGH), echoRight);
-  triggerPulse();
-  Serial.println("echo 4");
-  backDistance = calcDistance(pulseIn(echoBack, HIGH), echoBack);
+    Serial.println("echo 1");
+    delay(10);
+    triggerPulse();
+    frontDistances[center] = calcDistance(pulseIn(echoCenter, HIGH), echoCenter);
+    Serial.println("echo 2");
+    delay(10);
+    triggerPulse();
+    frontDistances[left] = calcDistance(pulseIn(echoLeft, HIGH), echoLeft);
+    delay(10);
+    triggerPulse();
+    Serial.println("echo 3");
+    frontDistances[right] = calcDistance(pulseIn(echoRight, HIGH), echoRight);
 }
 
 //Function returns updated front reading in cm. 
-float getAllFrontDistance(){
+float getLeftDistance(){
+  return frontDistances[1];
+}
+
+float getRightDistance(){
   return frontDistances[2];
 }
-//Function returns updataed back raeding in cm.
-float getBackDistance(){
-  return backDistance;
+
+float getCenterDistance(){
+  return frontDistances[0];
 }
 
 // TODO: It is possible that we need to constrain the distance. Because misreadings etc.
@@ -95,12 +98,12 @@ bool isSomethingInRange(int min, int max){
 }
 
 // is being used in the context of range based detirmination
-bool toFarOrTooClose(){
+bool toFarOrTooClose(int min, int max){
   for(int i = 0; i < 3;){
     if(frontDistances[i] < min){
       return true;  // true for under minimum range
     }
-    if( frontDistances[i] > max){
+    if(frontDistances[i] > max){
       return false; // false for over maximum range
     }
     i++;
@@ -110,13 +113,11 @@ bool toFarOrTooClose(){
 //Function to test accuracy of sonar sensors
 void TestingDistanceAndAccuracy(){
   Serial.print("Center: ");
-  Serial.println(frontDistances[center]);
+  Serial.println(getCenterDistance());
   Serial.print("left: ");
-  Serial.println(frontDistances[left]);
+  Serial.println(getLeftDistance());
   Serial.print("right: ");
-  Serial.println(frontDistances[right]);
-  Serial.print("back: ");
-  Serial.println(backDistance);
+  Serial.println(getRightDistance());
 }
 
 //Function to initiate test
