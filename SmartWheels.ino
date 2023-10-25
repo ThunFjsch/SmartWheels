@@ -7,6 +7,7 @@
 #include "Driving.h"
 #include "FollowerDriving.h"
 #include "AutonomousDriving.h"
+#include "bluetooth.cpp"
 #include <SoftwareSerial.h>
 
 // Pin Indicator definition
@@ -36,9 +37,6 @@
 #define echoPinLeft 6
 #define echoPinRight 4
 
-// BT pin definition
-#define btRXD 12  // currently not used
-#define btTXD 13  // currently not used
 
 // IR Module definitions
 #define irFront A0
@@ -61,8 +59,7 @@ unsigned long currentMillis = 0;
 int buttonDebounceTime = 5;
 int elapsedButtonDebounceTime = 0;
 
-//setting up communication with the bt chip
-SoftwareSerial mySerial(btTXD,btRXD);
+
 
 void setup() {
   mySerial.begin(9600);
@@ -81,6 +78,8 @@ void loop() {
     sonarDebug();
     //TestingIRDetectionAccuracy();
   }
+
+  bluetooth();
 
   // Time
   currentMillis = millis();
@@ -135,51 +134,4 @@ void autonomousMode(){
 }
 
 
-// Bluetooth Mockup
-void bluetooth() {  // TODO: Remove this when Bluetooth Module is implemented
- 
-  
-  char message;
-  while(mySerial.available()){
-    message = mySerial.read();  
 
-    switch(message){//checks input message
-            case '0'://steers left
-              steerLeftSimple(speed);
-              directionTurn = 1;
-              break;
-            case '1'://steers right
-              steerRightSimple(speed);
-              directionTurn = 1;
-              break;
-            case '2'://forward
-              directionForwBack = true;
-              setMotorDirection(true);
-              break;
-            case '3': //reverse
-              directionForwBack = false;
-              setMotorDirection(false);
-              break;
-            case '4'://increase speed to 255 max
-              speed += 20;
-              directionTurn = 0;
-              if(speed > 255){
-                speed = 255;
-              }
-              setAllMotorSpeed(speed);
-              break;
-            case '5'://decrease speed untill 0
-              speed -= 20;
-              directionTurn = 0;
-              if(speed < 0){
-                speed = 0;
-              }
-              setAllMotorSpeed(speed);
-              break;
-            case '6'://stops all motors
-              stopMotors();
-              speed = 0;
-              break;
-    }//end of switch case   
-  }
-}
