@@ -7,6 +7,8 @@
 #include "Driving.h"
 #include "FollowerDriving.h"
 #include "AutonomousDriving.h"
+#include <SoftwareSerial.h>
+
 // Pin Indicator definition
 #define rightIndicatorPin A1
 #define leftIndicatorPin A2
@@ -35,8 +37,8 @@
 #define echoPinRight 4
 
 // BT pin definition
-#define btRxd 12  // currently not used
-#define btTxd 13  // currently not used
+#define btRXD 12  // currently not used
+#define btTXD 13  // currently not used
 
 // IR Module definitions
 #define irFront A0
@@ -59,12 +61,11 @@ unsigned long currentMillis = 0;
 int buttonDebounceTime = 5;
 int elapsedButtonDebounceTime = 0;
 
-// Communication values for Mockup Bluetooth
-bool stringComplete = false;  // TODO: Remove this when Bluetooth Module is implemented
-String inputString = "";  // TODO: Remove this when Bluetooth Module is implemented
+//setting up communication with the bt chip
+SoftwareSerial mySerial(btTXD,btRXD);
 
 void setup() {
-  Serial.begin(9600);
+  mySerial.begin(9600);
   initTimeModule();
   initIOModule();
   initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, rightIndicatorPin, leftIndicatorPin, debug);
@@ -100,7 +101,7 @@ void loop() {
   switch(state){
     case 0:
       Serial.println("RC Mode");
-      simulateBT();
+      bluetooth();
       directionTurn = getManualDirection();
       break;
     case 1:
@@ -133,69 +134,52 @@ void autonomousMode(){
 
 }
 
-void simulateBT(){  // TODO: Remove this when Bluetooth Module is implemented
-  if(stringComplete){
-    stringComplete = false;
-    // If u is inputted chase from pin 8 to 13 is active
-    if(inputString == "a\n"){
-      steerLeftSimple(speed);
-      directionTurn = 1;
-      inputString = "";
-    }
-    // if d is inputted chase from pin 13 to 8 is active
-    else if(inputString == "d\n"){
-      steerRightSimple(speed);
-      directionTurn = 2;
-      inputString = "";
-    }
-    else if(inputString == "w\n"){
-      directionForwBack = true;
-      setMotorDirection(true);
-    }
-    else if(inputString == "s\n"){
-      directionForwBack = false;
-      setMotorDirection(false);
-    }
-    else if(inputString == "q\n"){
-      speed += 20;
-      directionTurn = 0;
-      if(speed > 255){
-        speed = 255;
-      }
-      setAllMotorSpeed(speed);
-    }
-    else if(inputString == "e\n"){
-      speed -= 20;
-      directionTurn = 0;
-      if(speed < 0){
-        speed = 0;
-      }
-      setAllMotorSpeed(speed);
-    }
-    else if(inputString == " \n"){
-      stopMotors();
-      speed = 0;
-    }
-    else {
-      // if invalid input resets inputString
-      inputString = "";
-    }
-  }
-}
 
 // Bluetooth Mockup
-void serialEvent() {  // TODO: Remove this when Bluetooth Module is implemented
-  while (Serial.available()) {
-    // get the new byte:
-    char inChar = (char)Serial.read();
+void bluetooth() {  // TODO: Remove this when Bluetooth Module is implemented
  
-    // add it to the inputString:
-    inputString += inChar;
-    // if the incoming character is a newline, set a flag so the main loop can
-    // do something about it:
-    if (inChar == '\n') {
-      stringComplete = true;
-      Serial.println(inputString);
-    }
+  
+  char message;
+  while(mySerial.available()){
+    message = mySerial.read();  
+
+    switch(message){//checks input message
+            case '0'://steers left
+              steerLeftSimple(speed);
+              directionTurn = 1;
+              break;
+            case '1'://steers right
+              steerRightSimple(speed);
+              directionTurn = 1;
+              break;
+            case '2'://forward
+              directionForwBack = true;
+              setMotorDirection(true);
+              break;
+            case '3': //reverse
+              directionForwBack = false;
+              setMotorDirection(false);
+              break;
+            case '4'://increase speed to 255 max
+              speed += 20;
+              directionTurn = 0;
+              if(speed > 255){
+                speed = 255;
+              }
+              setAllMotorSpeed(speed);
+              break;
+            case '5'://decrease speed untill 0
+              speed -= 20;
+              directionTurn = 0;
+              if(speed < 0){
+                speed = 0;
+              }
+              setAllMotorSpeed(speed);
+              break;
+            case '6'://stops all motors
+              stopMotors();
+              speed = 0;
+              break;
+    }//end of switch case   
   }
 }
