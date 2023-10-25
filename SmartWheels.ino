@@ -7,7 +7,7 @@
 #include "Driving.h"
 #include "FollowerDriving.h"
 #include "AutonomousDriving.h"
-#include "bluetooth.cpp"
+#include "bluetooth.h"
 #include <SoftwareSerial.h>
 
 // Pin Indicator definition
@@ -62,7 +62,7 @@ int elapsedButtonDebounceTime = 0;
 
 
 void setup() {
-  mySerial.begin(9600);
+  initBluetooth();
   initTimeModule();
   initIOModule();
   initMotorModule(leftMotorPinSide, rightMotorPinSide, enablePWMPinLeft, enablePWMPinRight, rightIndicatorPin, leftIndicatorPin, debug);
@@ -79,8 +79,7 @@ void loop() {
     //TestingIRDetectionAccuracy();
   }
 
-  bluetooth();
-
+  
   // Time
   currentMillis = millis();
   updateCarTime(currentMillis);
@@ -100,13 +99,13 @@ void loop() {
   switch(state){
     case 0:
       Serial.println("RC Mode");
-      bluetooth();
-      directionTurn = getManualDirection();
+      bluetooth(speed, directionTurn, directionForwBack);
+      //directionTurn = getManualDirection();
       break;
     case 1:
       //if(!isSomethingFront(15)){}
       Serial.println("AT Mode");
-      runAutonomous();
+      //runAutonomous();
       directionTurn = getDrivingDirection();
       break;
     case 2:

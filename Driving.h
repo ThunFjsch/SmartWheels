@@ -13,5 +13,6 @@ void lineSteeringBehaviour();
 void correctRangeChange();
 void forwardDrive(int speed);
 void reverseDrive(int speed);
-
+int getDrivingDirection();
+int getManualDirection();
 #endif
