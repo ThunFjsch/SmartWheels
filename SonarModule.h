@@ -8,6 +8,7 @@ float getCenterDistance();
 float getLeftDistance();
 float getRightDistance();
 bool isSomethingFront(int distance);
+bool toFarOrTooClose(int min, int max);
 bool isSomethingInRange(int min, int max);
 void TestingDistanceAndAccuracy();
 void sonarDebug();

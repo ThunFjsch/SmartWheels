@@ -23,7 +23,7 @@ void initSonarModule(int _trigPin, int _echoPinCenter, int _echoPinLeft, int _ec
   echoLeft = _echoPinLeft;
   echoRight = _echoPinRight;
 
- //Setup Sonar Pins
+  //Setup Sonar Pins
   pinMode(trig, OUTPUT);
   pinMode(echoCenter, INPUT);
   pinMode(echoLeft, INPUT);  

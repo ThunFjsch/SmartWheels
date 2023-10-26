@@ -12,11 +12,7 @@ void initBluetooth(){
   mySerial.begin(9200);
 }
 
-
 void bluetooth(int speedBT, int directionTurnBT, int directionForwBackBT) {//function that makes bluetooth usable
-  
-
-
   char message;
   while(mySerial.available()){
     message = mySerial.read();  

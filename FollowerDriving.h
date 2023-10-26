@@ -4,6 +4,7 @@
 #include "Driving.h"
 
 void initFollower();
-void runFollower();
+void runFollower(int speed);
+int getFollowerSpeed();
 
 #endif

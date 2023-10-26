@@ -10,9 +10,13 @@ void initFollower(int _followerDistanceRangeMin, int _followerDistanceRangeMax){
     isOnLine();
 }
 
-void runFollower(){
+void runFollower(int speed){
     if(!isSomethingInRange(followerDistanceRangeMin, followerDistanceRangeMax)){
-        correctRangeChange();   // correct the speed of the car to align within the range
+        correctRangeChange(speed);   // correct the speed of the car to align within the range
     }
-    lineSteeringBehaviour();
+    lineSteeringBehaviour(speed);
+}
+
+int getFollowerSpeed(){
+    return getDrivingSpeed();
 }

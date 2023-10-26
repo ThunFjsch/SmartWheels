@@ -3,9 +3,7 @@
 #include <Arduino.h>
 #include "Driving.h"
 
-
-// TODO: implement Autonomous driving logic
-void initAutonomous();
-void runAutonomous();
+void runAutonomous(int speed);
+int getAutonomSpeed();
 
 #endif

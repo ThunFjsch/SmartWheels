@@ -2,30 +2,89 @@
 #include "IRModule.h"
 #include "MotorModule.h"
 
-// enum turnDirections = {
-//     forward,
-//     left, 
-//     right
-// }
+#define hardStop 10
+#define rangeMin 18
+#define rangeMax 24
+#define speedChange 40
+#define speedChangePerInterval 5
 
- int directionTurn4 = 0;
+enum turnDirections {
+  forward,
+  left, 
+  right
+};
 
-// TODO: make speed change proportional to the 
-// void correctRangeChange(int speed, int speedChange){
-//     if(toFarOrTooClose()){
-//         setAllMotorSpeed(speed - speedChange);
-//     } else{
-//         setAllMotorSpeed(speed + speedChange);
-//     }
-//     directionTurn = 0;  // TODO: Check if there is a edge case of switching the turn indication in taking turns
-// }
+int directionTurnDriving = forward;
+int drivingSpeed = 0;
+int previousSpeed;
 
-int getDrivingDirection(){
-    return directionTurn4 = 0;
+void turnLeft(int leftMotorSpeed){
+    steerLeftSimple(leftMotorSpeed);
+    directionTurnDriving = left;
 }
 
-void lineSteeringBehaviour(){
-    // TODO: implement the logic for the steering according to the line changes
+void turnRight(int rightMotorSpeed){
+    steerRightSimple(rightMotorSpeed);
+    directionTurnDriving = right;
+}
+
+void forwardDrive(int speed){
+    drivingSpeed = speed;
+    setAllMotorSpeed(speed);
+}
+
+// TODO: make speed change proportional to the 
+void correctRangeChange(int speed){
+    if(toFarOrTooClose(rangeMin, rangeMax)){
+        forwardDrive(speed - speedChange);
+    } else{
+        forwardDrive(speed + speedChange);
+    }
+    directionTurnDriving = forward;  // TODO: Check if there is a edge case of switching the turn indication in taking turns
+}
+
+void collisionAvoidanceSpeedControl(int speed){
+    if(isSomethingFront(rangeMin)){
+        forwardDrive(speed - speedChange);
+    }
+    else if(isSomethingFront(hardStop)){
+        stopMotors();
+    }
+    else if(previousSpeed == speed){
+        forwardDrive(speed + speedChange);
+    }
+    else{
+        forwardDrive(speed);
+    }
+}
+
+int getDrivingDirection(){
+    return directionTurnDriving;
+}
+
+int getDrivingSpeed(){
+    return drivingSpeed;
+}
+
+void lineSteeringBehaviour(int speed){
+    if(GetFrontIR() && !GetLeftIR() && !GetRightIR()){
+        setAllMotorSpeed(speed);
+    }
+    else if(GetFrontIR() && GetLeftIR() && GetRightIR()){
+        setAllMotorSpeed(speed);
+    }
+    else if(GetFrontIR() && GetLeftIR() && !GetRightIR()){
+        complexSteering(speed + speedChange, speed);
+    }
+    else if(GetFrontIR() && !GetLeftIR() && GetRightIR()){
+        complexSteering(speed, speed + speedChange);
+    }
+    else if(!GetFrontIR() && GetLeftIR() && !GetRightIR()){
+        turnLeft(speed);
+    }
+    else if(!GetFrontIR() && !GetLeftIR() && GetRightIR()){
+        turnRight(speed);
+    }
 }
 
 void isOnLine(){
@@ -34,18 +93,4 @@ void isOnLine(){
     } else {
         return false;
     }
-}
-
-// void turnLeft(int leftMotorSpeed){
-//     steerLeftSimple(speed);
-//     directionTurn = 1;
-// }
-
-// void turnRight(int rightMotorSpeed){
-//     steerRightSimple(speed);
-//     directionTurn = 2;
-// }
-
-void forwardDrive(int speed){
-    setAllMotorSpeed(speed);
 }

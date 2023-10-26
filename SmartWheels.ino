@@ -8,7 +8,6 @@
 #include "FollowerDriving.h"
 #include "AutonomousDriving.h"
 #include "bluetooth.h"
-#include <SoftwareSerial.h>
 
 // Pin Indicator definition
 #define rightIndicatorPin A1
@@ -31,8 +30,8 @@
 #define enablePWMPinLeft 6   // is connected with blue wire
 #define enablePWMPinRight 5  // is connected with white wire
 
-//Sonar module pins
-#define trigPin 7
+// Sonar module pins
+#define trigPin 7 
 #define echoPinCenter 5
 #define echoPinLeft 6
 #define echoPinRight 4
@@ -59,9 +58,8 @@ unsigned long currentMillis = 0;
 int buttonDebounceTime = 5;
 int elapsedButtonDebounceTime = 0;
 
-
-
 void setup() {
+  Serial.begin(9600);
   initBluetooth();
   initTimeModule();
   initIOModule();
@@ -69,16 +67,15 @@ void setup() {
   initSonarModule(trigPin, echoPinCenter, echoPinLeft, echoPinRight);
   initIRModule(irFront, irLeft, irRight);
   pinMode(modeSwitchButton, INPUT_PULLUP);
-  //playStartup(buzzer);
+  playStartup(buzzer);
 }
 
 void loop() {
   if(false){
-    //testBitmaps();
+    testBitmaps();
     sonarDebug();
-    //TestingIRDetectionAccuracy();
+    TestingIRDetectionAccuracy();
   }
-
   
   // Time
   currentMillis = millis();
@@ -92,26 +89,27 @@ void loop() {
   drawDisplay(state, speed, directionForwBack, directionTurn, getHours(), getMinutes(), getSeconds());  // TODO: Fix the time Display, currently wrong time like 0:97:00 is being displayed
 
   // Update Sensors
-  //updatedSonarDistance();
-  //updatedIRDetection();
+  updatedSonarDistance();
+  updatedIRDetection();
 
   // car state logic
   switch(state){
     case 0:
       Serial.println("RC Mode");
       bluetooth(speed, directionTurn, directionForwBack);
-      //directionTurn = getManualDirection();
+      // TODO: Update speed, direction and directionForwBack in the ino. So the OLED can display it correctly
       break;
     case 1:
-      //if(!isSomethingFront(15)){}
       Serial.println("AT Mode");
-      //runAutonomous();
+      runAutonomous(speed);
+      speed = getAutonomSpeed();
       directionTurn = getDrivingDirection();
       break;
     case 2:
       Serial.println("SM Mode");
-      runFollower();
+      runFollower(speed);
       directionTurn = getDrivingDirection();
+      speed = getFollowerSpeed();
   }
 }
 
@@ -127,10 +125,3 @@ void updateStateButton(){
   }
   elapsedButtonDebounceTime++;
 }
-
-void autonomousMode(){
-
-}
-
-
-

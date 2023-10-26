@@ -5,14 +5,14 @@
 #include "IRModule.h"
 #include "MotorModule.h"
 
-void initDriving();
 void turnLeft(int leftMotorSpeed);
 void turnRight(int rightMotorSpeed);
-void isOnLine();
-void lineSteeringBehaviour();
-void correctRangeChange();
 void forwardDrive(int speed);
-void reverseDrive(int speed);
+void correctRangeChange(int speed);
+void collisionAvoidanceSpeedControl(int speed);
 int getDrivingDirection();
-int getManualDirection();
+int getDrivingSpeed();
+void lineSteeringBehaviour(int speed);
+void isOnLine();
+
 #endif
