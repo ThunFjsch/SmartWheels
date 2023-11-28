@@ -1,5 +1,3 @@
-#include <time.h>
-#include <Arduino.h>
 #include "MotorModule.h"
 
 int leftMotorSide;   // is connected to 1A on the Inverter
@@ -15,24 +13,25 @@ void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft
   rightMotorSide = _rightMotorSide;
   enablePWMLeft = _enablePWMLeft;
   enablePWMRight = _enablePWMRight;
-   
+
+	//TODO: Redo setup of the output pins
   // Setup HBridge Pins
-  pinMode(leftMotorSide, OUTPUT);
+  /*pinMode(leftMotorSide, OUTPUT);
   digitalWrite(leftMotorSide, LOW);
   pinMode(rightMotorSide, OUTPUT);
   digitalWrite(rightMotorSide, LOW);
   pinMode(enablePWMLeft, OUTPUT);
-  pinMode(enablePWMRight, OUTPUT);
+  pinMode(enablePWMRight, OUTPUT);*/
 
   // Debug & testing
   if(debug){
-    Serial.println("test");
-    motorLinearIncreaseTest();
-    motorHighDrasticSpeedChange();
-    forwardBackwardsDrivingTest();
-    simpleSteeringTest();
-    complexSteeringTest();
-    stopMotors();
+    // TODO: Rework the Testing functions
+    // motorLinearIncreaseTest();
+    // motorHighDrasticSpeedChange();
+    // forwardBackwardsDrivingTest();
+    // simpleSteeringTest();
+    // complexSteeringTest();
+    // stopMotors();
   }
 }
 
@@ -45,36 +44,40 @@ void stopMotors(){
 // MotorSpeeds should always be between 0 - 255 | The range of the MotorSpeed
 // Sets the speed on both motors at once
 void setAllMotorSpeed(int newSpeed){
-  analogWrite(enablePWMLeft, newSpeed);
-  analogWrite(enablePWMRight, newSpeed);
+  //TODO: Set PMW signal strength
+  // analogWrite(enablePWMLeft, newSpeed);
+  // analogWrite(enablePWMRight, newSpeed);
 }
 
 // Only changes the speed in the left motor side
 // Without influencing the other motor
 void setLeftMotorSpeed(int newSpeed){
-  analogWrite(enablePWMLeft, newSpeed);
+  //TODO: speed left
+  // analogWrite(enablePWMLeft, newSpeed);
 }
 
 // Only changes the speed in the right motor side
 // Without influencing the other motor
 void setRightMotorSpeed(int newSpeed){
-  analogWrite(enablePWMRight, newSpeed);
+  // TODO: Speed Right
+  //analogWrite(enablePWMRight, newSpeed);
 }
 
 // Sets the driving direction of the car
 void setMotorDirection(bool direction){
+  // TODO: Setup the direction code
   // forward direction
   // true is forward
-  if(direction){
-    digitalWrite(leftMotorSide, LOW);
-    digitalWrite(rightMotorSide, LOW);
-  }
+  // if(direction){
+  //   digitalWrite(leftMotorSide, LOW);
+  //   digitalWrite(rightMotorSide, LOW);
+  // }
   // backward direction
   // false is backwards
-  else if(!direction){
-    digitalWrite(leftMotorSide, HIGH);
-    digitalWrite(rightMotorSide, HIGH);
-  }
+  // else if(!direction){
+  //   digitalWrite(leftMotorSide, HIGH);
+  //   digitalWrite(rightMotorSide, HIGH);
+  // }
 }
 
 /* ========================= Steering functions ================================= */
@@ -91,11 +94,14 @@ void steerRightSimple(int rightMotorForce){
   setLeftMotorSpeed(0);
 }
 
+//TODO: Add 0 Degree turn
+
 // Complex steering takes the individual speeds for both sides
 // because of that more complex steering maneuvers are possible 
 void complexSteering(int rightMotorForce, int leftMotorForce){
-  analogWrite(enablePWMLeft, rightMotorForce);
-  analogWrite(enablePWMRight, leftMotorForce);
+  // TODO: Implement it with the new PWM Signal strength
+  // analogWrite(enablePWMLeft, rightMotorForce);
+  // analogWrite(enablePWMRight, leftMotorForce);
 }
 
 /* ========================= Testing functions ================================= */

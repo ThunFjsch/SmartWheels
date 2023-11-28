@@ -133,19 +133,19 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="src\IRModule.h">
+    <Compile Include="src\depricated\IRModule.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\depricated\OLEDScreen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\depricated\SonarModule.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\MotorModule.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\OLEDScreen.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\SonarModule.h">
+    <Compile Include="src\Motors\MotorModule.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\time\timeInterrupt.h">
@@ -158,6 +158,8 @@
   <ItemGroup>
     <Folder Include="Debug\" />
     <Folder Include="src\" />
+    <Folder Include="src\Motors" />
+    <Folder Include="src\depricated" />
     <Folder Include="src\time" />
   </ItemGroup>
   <ItemGroup>
@@ -170,19 +172,19 @@
     <None Include="SmartWheels.componentinfo.xml">
       <SubType>compile</SubType>
     </None>
-    <None Include="src\IRModule.cpp">
+    <None Include="src\depricated\IRModule.cpp">
       <SubType>compile</SubType>
     </None>
-    <None Include="src\MotorModule.cpp">
+    <None Include="src\depricated\OLEDScreen.cpp">
       <SubType>compile</SubType>
     </None>
-    <None Include="src\OLEDScreen.cpp">
+    <None Include="src\depricated\SmartWheels.ino">
       <SubType>compile</SubType>
     </None>
-    <None Include="src\SmartWheels.ino">
+    <None Include="src\depricated\SonarModule.cpp">
       <SubType>compile</SubType>
     </None>
-    <None Include="src\SonarModule.cpp">
+    <None Include="src\Motors\MotorModule.cpp">
       <SubType>compile</SubType>
     </None>
   </ItemGroup>
