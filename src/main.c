@@ -35,12 +35,23 @@
 #define outOneIR 3
 #define outTwoIR 2
 
+enum States {
+		AutonomousState = 0,
+		FollowerState = 1,
+		BluetoothState = 2
+};
+
+int currentState = 2;
+
 // initial time values
 uint32_t previousmillis = 0;
 uint32_t currentmillis = 0;
 uint32_t interval = 100;
 
-
+// Button debounce
+uint32_t previousDebounce = 0;
+uint32_t currentDebounce = 0;
+uint32_t debounceInterval = 400;
 
 int main(void)
 {
@@ -51,15 +62,28 @@ int main(void)
 	DDRB |= (1<<DDB5);
 	DDRD |= (1<<DDD7);
 	
+	DDRC |= ~(1<<DDC3);	// Button mode switch
+	
   /* Replace with your application code */
   while(1){
 		currentmillis = millis();
+		currentDebounce = millis();
 		
 		if((currentmillis - previousmillis) >= interval){
 			previousmillis = currentmillis;
 			PORTB ^= (1<<DDB5);
 		}
 		
+ 		//State change selection via button
+		 	int registerBtnLayout = 0b00000100;
+		unsigned char switches = PINC & registerBtnLayout;
+		if((switches & (1<<PINC3)) && (currentDebounce - previousDebounce) >= debounceInterval){
+			previousDebounce = currentDebounce;
+			currentState++;
+			if(currentState == 3){
+				currentState = 1;
+			}
+		}
 		
 	}
 }
