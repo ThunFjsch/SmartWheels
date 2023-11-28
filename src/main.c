@@ -62,7 +62,7 @@ int main(void)
 	DDRB |= (1<<DDB5);
 	DDRD |= (1<<DDD7);
 	
-	DDRC |= ~(1<<DDC3);	// Button mode switch
+	DDRD |= ~(1<<DDD2);	// Button mode switch
 	
   /* Replace with your application code */
   while(1){
@@ -75,9 +75,7 @@ int main(void)
 		}
 		
  		//State change selection via button
-		 	int registerBtnLayout = 0b00000100;
-		unsigned char switches = PINC & registerBtnLayout;
-		if((switches & (1<<PINC3)) && (currentDebounce - previousDebounce) >= debounceInterval){
+		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
 			previousDebounce = currentDebounce;
 			currentState++;
 			if(currentState == 3){
