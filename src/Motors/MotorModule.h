@@ -1,16 +1,23 @@
 #ifndef MotorModule_H
 #define MotorModule_H
+#include "time/timeInterrupt.h"
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
+#include <avr/delay.h>
 #include <stdbool.h>
 
-// Setup
-void initMotorModule(bool test);	
-/* ========================= Speed/Direction functions ================================= */
+/* ========================= Setup ================================= */
+void initMotorModule(bool test);
+/* ========================= Steering functions ================================= */
+void indicatorLeft();
+void indicatorRight();
+void resetIndicator()
+/* ========================= Speed functions ================================= */
 void stopMotors();
 void setAllMotorSpeed(uint8_t newSpeed);
 void setLeftMotorSpeed(uint8_t newSpeed);
 void setRightMotorSpeed(uint8_t newSpeed);
+/* ========================= direction functions ================================= */
 void setMotorDirection(bool direction);
 void setIndividualDirection(bool leftDirection, bool rightDirection);
 

@@ -1,8 +1,14 @@
 #include "MotorModule.h"
+#include "/time/timeInterrupt.h"
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 #include <avr/delay.h>
 #include <stdbool.h>
+
+/* ========================= Setup ================================= */
+#define blinkInterval 400
+uint32_t currentIndicater = 0;
+uint32_t previousIndicater = 0;
 
 // debug will allow the run of tests
 void initMotorModule(bool test) {
@@ -12,6 +18,9 @@ void initMotorModule(bool test) {
 	// Timer/Counter0
 	TCCR1A |= 1<<WGM11 | 1<<WGM10 | 1<<COM1A1 | 1<<COM1B1;
 	TCCR1B |= 1<<CS12 | 1<<CS10;
+	
+	// Indicator LED lights
+	DDRC |= (1<<DDC1) | (1<<DDC2);
 	
 	// Debug & testing
 	if(test){
@@ -37,6 +46,29 @@ void initMotorModule(bool test) {
 	}
 }
 
+/* ========================= indicator functions ================================= */
+
+void indicatorLeft(){
+	currentIndicater = millis();
+	if((currentIndicater - previousIndicater) >= blinkInterval){
+		previousIndicater = currentIndicater;
+	  PORTC ^= (1<<DDC1);	//PC1
+	}
+}
+
+void indicatorRight(){
+	currentIndicater = millis();
+	if((currentIndicater - previousIndicater) >= blinkInterval){
+		previousIndicater = currentIndicater;
+		PORTC ^= (1<<DDC2); //PC2
+	}
+}
+
+void resetIndicator(){
+	PORTC &= ~(1<<PORTC1);
+	PORTC &= ~(1<<PORTC2);
+}
+
 /* ========================= Speed/Direction functions ================================= */
 
 void stopMotors(){
@@ -47,6 +79,7 @@ void stopMotors(){
 // MotorSpeeds should always be between 0 - 255 | The range of the MotorSpeed
 // Sets the speed on both motors at once
 void setAllMotorSpeed(uint8_t newSpeed){
+	resetIndicator();
 	OCR1A = newSpeed;
 	OCR1B = newSpeed;
 }
@@ -63,6 +96,7 @@ void setRightMotorSpeed(uint8_t newSpeed){
 	OCR1B = newSpeed;
 }
 
+/* ========================= Direction functions ================================= */
 
 // Sets the driving direction of the car
 void setMotorDirection(bool direction){
@@ -100,22 +134,26 @@ void setIndividualDirection(bool leftDirection, bool rightDirection){
 void steerLeftSimple(uint8_t leftMotorForce){
 	setLeftMotorSpeed(leftMotorForce);
 	setRightMotorSpeed(0);
+	indicatorLeft();
 }
 
 // Sets the rightMotorForce to some speed and sets the right motor to 0
 void steerRightSimple(uint8_t rightMotorForce){
 	setRightMotorSpeed(rightMotorForce);
 	setLeftMotorSpeed(0);
+	indicatorRight();
 }
 
 void zeroDegreeLeft(uint8_t motorSpeed){
 	setIndividualDirection(false, true);
 	setAllMotorSpeed(motorSpeed);
+	indicatorLeft();
 }
 
 void zeroDegreeRight(uint8_t motorSpeed){
 	setIndividualDirection(true, false);
 	setAllMotorSpeed(motorSpeed);
+	indicatorRight();
 }
 
 // Complex steering takes the individual speeds for both sides
