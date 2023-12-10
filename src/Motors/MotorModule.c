@@ -1,0 +1,224 @@
+#include "MotorModule.h"
+#include <avr/io.h>
+#include <avr/sfr_defs.h>
+#include <avr/delay.h>
+#include <stdbool.h>
+
+// debug will allow the run of tests
+void initMotorModule(bool test) {
+	// Control Pins
+	DDRB |= 1<<PINB0 | 1<<PINB3 | 1<<PINB1 | 1<<PINB2;	// IN1/2 | IN3/4 | ENA | ENB
+	
+	// Timer/Counter0
+	TCCR1A |= 1<<WGM11 | 1<<WGM10 | 1<<COM1A1 | 1<<COM1B1;
+	TCCR1B |= 1<<CS12 | 1<<CS10;
+	
+	// Debug & testing
+	if(test){
+		// TODO: Rework the Testing functions
+		motorLinearIncreaseTest();
+		motorHighDrasticSpeedChange();
+		forwardBackwardsDrivingTest();
+		simpleSteeringTest();
+		complexSteeringTest();
+		stopMotors();
+	}
+}
+
+/* ========================= Speed/Direction functions ================================= */
+
+void stopMotors(){
+	OCR1A = 0;	// PB1
+	OCR1B = 0;  // PB2
+}
+
+// MotorSpeeds should always be between 0 - 255 | The range of the MotorSpeed
+// Sets the speed on both motors at once
+void setAllMotorSpeed(uint8_t newSpeed){
+	OCR1A = newSpeed;
+	OCR1B = newSpeed;
+}
+
+// Only changes the speed in the left motor side
+// Without influencing the other motor
+void setLeftMotorSpeed(uint8_t newSpeed){
+	OCR1A = newSpeed;
+}
+
+// Only changes the speed in the right motor side
+// Without influencing the other motor
+void setRightMotorSpeed(uint8_t newSpeed){
+	OCR1B = newSpeed;
+}
+
+
+// Sets the driving direction of the car
+void setMotorDirection(bool direction){
+	// forward direction
+	// true is forward
+	if(direction){
+		PORTB &= ~(1<<DDB0);
+		PORTB &= ~(1<<DDB3);
+	}
+	// backward direction
+	// false is backwards
+	else if(!direction){
+		PORTB |= (1<<DDB0);
+		PORTB |= (1<<DDB3);
+	}
+}
+
+void setIndividualDirection(bool leftDirection, bool rightDirection){
+	if(leftDirection){
+		PORTB &= ~(1<<DDB0);
+	} else {
+		PORTB &= (1<<DDB0);
+	}
+	
+	if(rightDirection){
+		PORTB &= ~(1<<DDB3);
+	} else {
+		PORTB |= (1<<DDB3);
+	}
+}
+
+/* ========================= Steering functions ================================= */
+
+// Sets the leftMotorForce to some speed and sets the right motor to 0
+void steerLeftSimple(uint8_t leftMotorForce){
+	setLeftMotorSpeed(leftMotorForce);
+	setRightMotorSpeed(0);
+}
+
+// Sets the rightMotorForce to some speed and sets the right motor to 0
+void steerRightSimple(uint8_t rightMotorForce){
+	setRightMotorSpeed(rightMotorForce);
+	setLeftMotorSpeed(0);
+}
+
+void zeroDegreeLeft(uint8_t motorSpeed){
+	setIndividualDirection(false, true);
+	setAllMotorSpeed(motorSpeed);
+}
+
+void zeroDegreeRight(uint8_t motorSpeed){
+	setIndividualDirection(true, false);
+	setAllMotorSpeed(motorSpeed);
+}
+//TODO: Add 0 Degree turn
+
+// Complex steering takes the individual speeds for both sides
+// because of that more complex steering maneuvers are possible
+void complexSteering(uint8_t rightMotorForce, uint8_t leftMotorForce){
+	// TODO: Implement it with the new PWM Signal strength
+	// analogWrite(enablePWMLeft, rightMotorForce);
+	// analogWrite(enablePWMRight, leftMotorForce);
+}
+
+/* ========================= Testing functions ================================= */
+
+void motorLinearIncreaseTest(){
+	setMotorDirection(true);
+	setAllMotorSpeed(240);
+	_delay_ms(500000);
+	steerRightSimple(200);
+	steerLeftSimple(200);
+	zeroDegreeLeft(200);
+	zeroDegreeRight(200);
+	_delay_ms(500000);
+	setAllMotorSpeed(250);
+	// While driving forward increases the speed linear over time
+	setMotorDirection(true);
+	for(int i = 0; i <= 255;){
+		setAllMotorSpeed(i);
+		_delay_ms(100);
+		i++;
+	}
+	
+	// Drives backwards while increasing speed
+	setMotorDirection(false);
+	for(int i = 0; i <= 255;){
+		setAllMotorSpeed(i);
+		_delay_ms(500);
+		i++;
+	}
+	stopMotors();
+}
+
+// Changes every 200ms the selected speed
+void motorHighDrasticSpeedChange(){
+	int randomeNumber;
+	int arrayLength = 8;
+	int differentSpeeds[8] = {0, 50, 100, 150, 180, 200, 230, 250};   // various sppeds to randomly choose from
+	
+	setMotorDirection(true);
+	for(int i = 0; i <= 3000;){
+		randomeNumber = random(0, arrayLength);     // 0 min 8 max
+		setAllMotorSpeed(differentSpeeds[randomeNumber]);
+		_delay_ms(1000);
+		i++;
+	}
+
+	setMotorDirection(false);
+	for(int i = 0; i <= 3000;){
+		randomeNumber = random(0, arrayLength);     // 0 min 8 max
+		setAllMotorSpeed(differentSpeeds[randomeNumber]);
+		_delay_ms(1000);
+		i++;
+	}
+	stopMotors();
+}
+
+// Testing reverse and forward driving
+void forwardBackwardsDrivingTest(){
+	setAllMotorSpeed(150);
+	setMotorDirection(true);
+	_delay_ms(2000);
+	setMotorDirection(false);
+	_delay_ms(2000);
+
+	stopMotors();
+}
+
+//
+void simpleSteeringTest(){
+	// Right side forwards
+	setMotorDirection(true);
+	steerRightSimple(100);
+	_delay_ms(2000);
+	// Backwards
+	setMotorDirection(false);
+	steerRightSimple(100);
+	_delay_ms(2000);
+	
+
+	// Left side forwards
+	steerLeftSimple(100);
+	_delay_ms(2000);
+	// Backwards
+ _delay_ms(2000);
+	steerLeftSimple(100);
+	_delay_ms(2000);
+
+	stopMotors();
+}
+
+// This test forms more of demonstration how the it could be used.
+// This example increases linear
+void complexSteeringTest(){
+	int leftMotorForce = 40;  // starting with higher speed than rightMotorForce
+	for(int rightMotorForce = 0; rightMotorForce <= 255;){
+		complexSteering(rightMotorForce, leftMotorForce);
+		_delay_ms(100);
+		
+		if(leftMotorForce == 255){
+			leftMotorForce--;
+		}
+		else{
+			leftMotorForce++;
+		}
+		rightMotorForce++;
+	}
+
+	stopMotors();
+}

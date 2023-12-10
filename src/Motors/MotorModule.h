@@ -1,18 +1,24 @@
 #ifndef MotorModule_H
-#define  MotorModule_H
-void initMotorModule(int _leftMotorSide, int _rightMotorSide, int _enablePWMLeft, int _enablePWMRight, bool debug);
+#define MotorModule_H
+#include <avr/io.h>
+#include <avr/sfr_defs.h>
+#include <stdbool.h>
+void initMotorModule(bool test);
 	
 /* ========================= Speed/Direction functions ================================= */
-void setAllMotorSpeed(int newSpeed);
-void setLeftMotorSpeed(int newSpeed);
-void setRightMotorSpeed(int newSpeed);
+void setAllMotorSpeed(uint8_t newSpeed);
+void setLeftMotorSpeed(uint8_t newSpeed);
+void setRightMotorSpeed(uint8_t newSpeed);
 void setMotorDirection(bool direction);
+void setIndividualDirection(bool leftDirection, bool rightDirection);
 void stopMotors();
 
 /* ========================= Steering functions ================================= */
-void steerLeftSimple(int leftMotorForce);
-void steerRightSimple(int rightMotorForce);
-void complexSteering(int rightMotorForce, int leftMotorForce);
+void steerLeftSimple(uint8_t leftMotorForce);
+void steerRightSimple(uint8_t rightMotorForce);
+void zeroDegreeLeft(uint8_t motorSpeed);
+void zeroDegreeRight(uint8_t motorSpeed);
+void complexSteering(uint8_t rightMotorForce, uint8_t leftMotorForce);
 	
 /* ========================= Testing functions ================================= */
 void motorLinearIncreaseTest();

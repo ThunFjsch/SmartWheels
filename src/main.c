@@ -1,6 +1,8 @@
 #include <avr/io.h>
 #include <stdint.h>
+#include <stdbool.h>
 #include "time/timeInterrupt.h"
+#include "motors/MotorModule.h"
 
 /* Pin Definitions*/
 // TODO: change arduino GPIO to register location
@@ -18,12 +20,6 @@
 #define buzzer A3
 #define modeSwitchButton A3
 #define batteryRead 1
-
-// Motor module
-#define leftMotorPinSide 8    // is connected with Inverter Input A1
-#define rightMotorPinSide 9   // is connected with Inverter Input A2
-#define enablePWMPinLeft 10   // is connected with blue wire
-#define enablePWMPinRight 11  // is connected with white wire
 
 //Sonar module
 #define trigPin 7
@@ -53,8 +49,8 @@ uint32_t previousDebounce = 0;
 uint32_t currentDebounce = 0;
 uint32_t debounceInterval = 400;
 
-int main(void)
-{
+int main(void){
+	initMotorModule(true);
 	// Time setup
 	millis_init();
 	sei();	// Allow the interrupt
@@ -64,6 +60,8 @@ int main(void)
 	
 	DDRD |= ~(1<<DDD2);	// Button mode switch
 	
+	
+	
   /* Replace with your application code */
   while(1){
 		currentmillis = millis();
@@ -71,7 +69,7 @@ int main(void)
 		
 		if((currentmillis - previousmillis) >= interval){
 			previousmillis = currentmillis;
-			PORTB ^= (1<<DDB5);
+			//PORTB ^= (1<<DDB5);
 		}
 		
  		//State change selection via button
