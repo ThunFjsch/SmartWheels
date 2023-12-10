@@ -3,15 +3,16 @@
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 #include <stdbool.h>
-void initMotorModule(bool test);
-	
+
+// Setup
+void initMotorModule(bool test);	
 /* ========================= Speed/Direction functions ================================= */
+void stopMotors();
 void setAllMotorSpeed(uint8_t newSpeed);
 void setLeftMotorSpeed(uint8_t newSpeed);
 void setRightMotorSpeed(uint8_t newSpeed);
 void setMotorDirection(bool direction);
 void setIndividualDirection(bool leftDirection, bool rightDirection);
-void stopMotors();
 
 /* ========================= Steering functions ================================= */
 void steerLeftSimple(uint8_t leftMotorForce);

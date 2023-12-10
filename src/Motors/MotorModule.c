@@ -15,13 +15,25 @@ void initMotorModule(bool test) {
 	
 	// Debug & testing
 	if(test){
-		// TODO: Rework the Testing functions
-		motorLinearIncreaseTest();
+		setAllMotorSpeed(240);
+		setMotorDirection(true);
+		setMotorDirection(false);
+		steerRightSimple(200);
+		steerLeftSimple(200);
+		zeroDegreeLeft(200);
+		zeroDegreeRight(200);
+		setAllMotorSpeed(250);
+		// Frieda: The time delays are not really working.
+		//				Maybe need some replacement with interrupt timer
+		//				But the functions can be tested in the debugger with breakpoints.
+		//				The functions to call are prepared above
+/*		motorLinearIncreaseTest();
 		motorHighDrasticSpeedChange();
 		forwardBackwardsDrivingTest();
 		simpleSteeringTest();
 		complexSteeringTest();
 		stopMotors();
+		*/
 	}
 }
 
@@ -105,28 +117,17 @@ void zeroDegreeRight(uint8_t motorSpeed){
 	setIndividualDirection(true, false);
 	setAllMotorSpeed(motorSpeed);
 }
-//TODO: Add 0 Degree turn
 
 // Complex steering takes the individual speeds for both sides
 // because of that more complex steering maneuvers are possible
 void complexSteering(uint8_t rightMotorForce, uint8_t leftMotorForce){
-	// TODO: Implement it with the new PWM Signal strength
-	// analogWrite(enablePWMLeft, rightMotorForce);
-	// analogWrite(enablePWMRight, leftMotorForce);
+	setLeftMotorSpeed(leftMotorForce);
+	setRightMotorSpeed(rightMotorForce);
 }
 
 /* ========================= Testing functions ================================= */
 
 void motorLinearIncreaseTest(){
-	setMotorDirection(true);
-	setAllMotorSpeed(240);
-	_delay_ms(500000);
-	steerRightSimple(200);
-	steerLeftSimple(200);
-	zeroDegreeLeft(200);
-	zeroDegreeRight(200);
-	_delay_ms(500000);
-	setAllMotorSpeed(250);
 	// While driving forward increases the speed linear over time
 	setMotorDirection(true);
 	for(int i = 0; i <= 255;){
@@ -219,6 +220,5 @@ void complexSteeringTest(){
 		}
 		rightMotorForce++;
 	}
-
 	stopMotors();
 }
