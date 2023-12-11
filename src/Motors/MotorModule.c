@@ -1,5 +1,4 @@
-#include "MotorModule.h"
-#include "/time/timeInterrupt.h"
+#include "../time/timeInterrupt.h"
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 #include <avr/delay.h>
@@ -11,7 +10,7 @@ uint32_t currentIndicater = 0;
 uint32_t previousIndicater = 0;
 
 // debug will allow the run of tests
-void initMotorModule(bool test) {
+void initMotorModule(bool test){
 	// Control Pins
 	DDRB |= 1<<PINB0 | 1<<PINB3 | 1<<PINB1 | 1<<PINB2;	// IN1/2 | IN3/4 | ENA | ENB
 	
@@ -24,14 +23,14 @@ void initMotorModule(bool test) {
 	
 	// Debug & testing
 	if(test){
-		setAllMotorSpeed(240);
-		setMotorDirection(true);
-		setMotorDirection(false);
+		//setAllMotorSpeed(240);
+		//setMotorDirection(true);
+		//setMotorDirection(false);
 		steerRightSimple(200);
-		steerLeftSimple(200);
-		zeroDegreeLeft(200);
-		zeroDegreeRight(200);
-		setAllMotorSpeed(250);
+		//steerLeftSimple(200);
+		//zeroDegreeLeft(200);
+		//zeroDegreeRight(200);
+		//setAllMotorSpeed(250);
 		// Frieda: The time delays are not really working.
 		//				Maybe need some replacement with interrupt timer
 		//				But the functions can be tested in the debugger with breakpoints.

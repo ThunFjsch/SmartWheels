@@ -1,6 +1,6 @@
 #ifndef MotorModule_H
 #define MotorModule_H
-#include "time/timeInterrupt.h"
+#include "../time/timeInterrupt.h"
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 #include <avr/delay.h>
