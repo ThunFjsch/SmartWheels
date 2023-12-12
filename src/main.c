@@ -2,14 +2,20 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include "time/timeInterrupt.h"
+#pragma "display/oledModule.h"
 
 // State controle
 enum States {
-		AutonomousState = 0,
-		FollowerState = 1,
-		BluetoothState = 2
+	AutonomousState = 0,
+	FollowerState = 1,
+	BluetoothState = 2
 };
 int currentState = 2;
+bool directionForwBack = true; // Forward is true. Backward is false
+int directionTurn = 0; // 0 straight 1 left 2 right
+int state = 0;
+int speed = 0;
+bool debug = false;
 
 // initial time values
 uint32_t previousmillis = 0;
@@ -21,7 +27,10 @@ uint32_t previousDebounce = 0;
 uint32_t currentDebounce = 0;
 uint32_t debounceInterval = 400;
 
-int main(void){
+int main(void)
+{
+	// Display Setup
+	initIOModule();
 	// Time setup
 	millis_init();
 	// Module Setup
@@ -34,10 +43,12 @@ int main(void){
   while(1){
 		currentmillis = millis();
 		currentDebounce = millis();
+		drawDisplay(currentState, speed, directionForwBack, directionTurn);
 		
+		// just for testing
 		steerLeftSimple(200);
 		
- 		//State change selection via button
+		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
 			previousDebounce = currentDebounce;
 			currentState++;
