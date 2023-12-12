@@ -37,6 +37,7 @@ int main(void)
 	initMotorModule(false);
 
 	DDRD |= ~(1<<DDD2);	// Button mode switch
+	PORTD |= (1<<PORTD2); // Pull-up resistor for button
 
 	sei();	// Allow the interrupt
 	
@@ -53,7 +54,7 @@ int main(void)
 			previousDebounce = currentDebounce;
 			currentState++;
 			if(currentState == 3){
-				currentState = 1;
+				currentState = 0;
 			}
 		}
 		

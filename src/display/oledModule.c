@@ -1,4 +1,5 @@
-#include "OLEDScreen.h"
+#include "oledModule.h"
+#include <string.h>
 #define SSD1306_ADDR  0x78 // address select 8-bit 0x78
 
 u8g2_t u8g2;
