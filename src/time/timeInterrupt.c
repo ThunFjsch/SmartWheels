@@ -5,7 +5,7 @@ volatile uint32_t ms = 0;
 
 void millis_init(void){
 	ms = 0;
-	
+	cli();
 	// Configure Timer/counter 0 to generate an interrupt every millisecond
 	// T_events = T_CPU * N * (TOP + 1)
 	//					= 1/16 MHz * 64 * (249 +1)
@@ -15,6 +15,7 @@ void millis_init(void){
 	OCR0A = 249;
 	// Timer/Counter0 Output compare match a interrupt enable
 	TIMSK0 |= (1<<OCIE0A);
+	sei();
 }
 
 ISR(TIMER0_COMPA_vect){

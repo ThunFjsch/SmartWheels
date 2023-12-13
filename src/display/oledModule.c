@@ -21,6 +21,7 @@ const unsigned char* speedometerDigits[lengthSpeedometerDigits] = {
 
 
 void initIOModule(){
+	cli();
 	u8g2_Setup_ssd1306_i2c_128x64_noname_f(&u8g2, U8G2_R0, u8x8_byte_avr_hw_i2c, u8x8_avr_delay);
 	u8g2_SetI2CAddress(&u8g2, SSD1306_ADDR);
 	u8g2_InitDisplay(&u8g2);
@@ -30,6 +31,7 @@ void initIOModule(){
 	u8g2_SetFontPosTop(&u8g2);
 	u8g2_SetFont(&u8g2, u8g2_font_freedoomr10_tu);
 	u8g2_SendBuffer(&u8g2);
+	sei();
 }
 
 void modeHighlight(int stateHighlight){

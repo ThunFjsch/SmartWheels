@@ -11,6 +11,7 @@ uint32_t previousIndicater = 0;
 
 // debug will allow the run of tests
 void initMotorModule(bool test){
+	cli();
 	// Control Pins
 	DDRB |= 1<<PINB0 | 1<<PINB3 | 1<<PINB1 | 1<<PINB2;	// IN1/2 | IN3/4 | ENA | ENB
 	
@@ -20,6 +21,7 @@ void initMotorModule(bool test){
 	
 	// Indicator LED lights
 	DDRC |= (1<<DDC1) | (1<<DDC2);
+	sei();
 	
 	// Debug & testing
 	if(test){
