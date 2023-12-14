@@ -1,7 +1,7 @@
-#ifndef HCSR04_H_
-#define HCSR04_H_
+#ifndef HCSR04_H
+#define HCSR04_H
 
-void HCSR04_init();
+void HCSR04_Init(void);
 uint32_t getDistance(void);
 
-#endif /* HCSR04_H_ */
+#endif //HCSR04_H
