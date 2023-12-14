@@ -550,7 +550,7 @@
     <Compile Include="src\Sensors\IRModule.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\Sensors\SonarModule.h">
+    <Compile Include="src\Sensors\sonarModule.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\time\timeInterrupt.h">
@@ -588,9 +588,9 @@
     <None Include="src\Sensors\IRModule.cpp">
       <SubType>compile</SubType>
     </None>
-    <None Include="src\Sensors\SonarModule.cpp">
+    <Compile Include="src\Sensors\sonarModule.c">
       <SubType>compile</SubType>
-    </None>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
