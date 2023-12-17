@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include "time/timeInterrupt.h"
 #pragma "display/oledModule.h"
+#include "Sensors/irSensor.h"
 
 // State controle
 enum States {
@@ -21,7 +22,9 @@ bool debug = false;
 uint32_t previousmillis = 0;
 uint32_t currentmillis = 0;
 uint32_t interval = 100;
-
+// sensor reading values
+uint8_t leftSensor = 0;
+uint8_t rightSensor = 0;
 // Button debounce
 uint32_t previousDebounce = 0;
 uint32_t currentDebounce = 0;
@@ -35,6 +38,8 @@ int main(void)
 	millis_init();
 	// Module Setup
 	initMotorModule(false);
+	
+	initIRModule();
 
 	DDRD |= ~(1<<DDD2);	// Button mode switch
 	PORTD |= (1<<PORTD2); // Pull-up resistor for button
@@ -48,7 +53,10 @@ int main(void)
 		
 		// just for testing
 		steerLeftSimple(200);
-		
+		// Update IR sensor readings
+		updatedIRDetection();
+		leftSensor = leftIRState;	
+		rightSensor = rightIRState;	
 		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
 			previousDebounce = currentDebounce;
