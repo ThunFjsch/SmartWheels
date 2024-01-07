@@ -532,6 +532,12 @@
     <Compile Include="lib\csrc\u8x8_u8toa.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\bluetooth\bt.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\bluetooth\bt.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\display\oledModule.c">
       <SubType>compile</SubType>
     </Compile>
@@ -568,6 +574,7 @@
     <Folder Include="src\" />
     <Folder Include="src\depricated\" />
     <Folder Include="src\motors" />
+    <Folder Include="src\bluetooth" />
     <Folder Include="src\Sensors\" />
     <Folder Include="src\display" />
     <Folder Include="src\time" />
