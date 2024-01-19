@@ -2,11 +2,11 @@
 #define SonarModule_H
 
 
-void initSonarModule();
-void updatedSonarDistance();
-float GetAllFrontDistance();
-float GetBackDistance();
-void TestingDistanceAndAccuracy();
-void sonarDebug();
+void initSonar();
+void _trigger();
+int _calcDistance(int time)
+int getLeftDistance();
+int getCenterDistance();
+int getRightDistance();
 
 #endif
