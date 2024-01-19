@@ -2,18 +2,22 @@
 #define  oledModule_H
 #include <u8g2.h>
 #include <u8x8_avr.h>
+#include <stdio.h>
 #include <stdbool.h>
 
 /* =============================== Initialize ================================= */
 void initIOModule();
+void batteryADCInit();
+uint16_t batteryADCRead(uint8_t channel);
 /* =============================== Non-animated Icons ================================= */
 void drawStaticElements();
 /* =============================== Animated Icons ================================= */
 void modeHighlight();
+void batteryADC();
 int getSpeedStringLength(int speed, char speed_string[10]);
 void drawSpeed(int speed);
 void drawDirections(bool directionForwBack, int directionLeftRight);
-void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight);
+void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds);
 /* =============================== Testing Functions ================================= */
 void testBitmaps();
 /* =============================== Bitmaps ================================= */

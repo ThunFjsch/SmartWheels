@@ -4,6 +4,14 @@
 
 u8g2_t u8g2;
 
+int voltage;
+
+enum time {
+	HOURS,
+	MINUTES,
+	SECONDS
+};
+
 // Array of the digits used in the speedometer
 #define lengthSpeedometerDigits 10
 const unsigned char* speedometerDigits[lengthSpeedometerDigits] = {
@@ -19,6 +27,26 @@ const unsigned char* speedometerDigits[lengthSpeedometerDigits] = {
 	digit_9_bits
 };
 
+void batteryADCInit(){
+	ADMUX |= (1 << REFS0); //AVCC
+	ADCSRA |= (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // 128 prescaler, enable ADC
+}
+
+uint16_t batteryADCRead(uint8_t channel) {
+	    // Select ADC channel
+	    ADMUX = (ADMUX & 0xF0) | (channel & 0x0F);
+	    // Start ADC conversion
+	    ADCSRA |= (1 << ADSC);
+	    // Wait for conversion to complete
+	    while (ADCSRA & (1 << ADSC));
+	    // Return the 10-bit ADC result
+	    return ADC;
+}
+
+void batteryADC() {
+	int batteryValue = batteryADCRead(3);
+	voltage = (batteryValue * 5)/1024; // V = (adcReading * Vref)/(10 bit)
+}
 
 void initIOModule(){
 	u8g2_Setup_ssd1306_i2c_128x64_noname_f(&u8g2, U8G2_R0, u8x8_byte_avr_hw_i2c, u8x8_avr_delay);
@@ -65,12 +93,13 @@ void drawSpeed(int speed){
 }
 
 
+
 void drawStaticElements(){
 	u8g2_DrawXBMP(&u8g2, 23,  51,  18, 11, automaticBits);
 	u8g2_DrawXBMP(&u8g2, 23,  37,  16, 12, automaticIconBits);
 	u8g2_DrawXBMP(&u8g2, 14,  6,  36, 18, batteryBits);  // TODO: change this to a dynamic way of displaying the battery state
 	u8g2_DrawXBMP(&u8g2, 89,  45,  15, 6, kmhBits);
-	u8g2_DrawXBMP(&u8g2, 2,  51,  16, 11, remoteControlModeBits);
+	u8g2_DrawXBMP(&u8g2, 2,  52,  16, 11, remoteControlModeBits);
 	u8g2_DrawXBMP(&u8g2, 2,  38,  16, 21, remoteControlModeIconBits);
 	u8g2_DrawXBMP(&u8g2, 45,  51,  18, 11, slaveModeBits);
 	u8g2_DrawXBMP(&u8g2, 45,  37,  17, 13, slaveModeIconBits);
@@ -94,21 +123,22 @@ void drawDirections(bool directionForwBack, int directionLeftRight){
 }
 
 
-void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight){
+void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds){
 	u8g2_FirstPage(&u8g2);
 	do {
 		drawSpeed(speed);
 		modeHighlight(state);
 		// TODO: add the functionality to display the correct battery state
+		batteryADC();
 		drawDirections(directionForwBack, directionLeftRight);
 		// Display the Time
 		// Char array for the time being showed on the display
-		/*
-		char timeString[9];
-		sprintf_P(timeString, PSTR("%2d:%02d:%02d"), hours, minutes, seconds);
-		// Draw the timeString
-		u8g2_DrawStr(&u8g2, 73, 12, timeString);
-		*/
+		char timeString[9]; 
+		memset(timeString, 0, sizeof(timeString));
+		// Format the time string
+		snprintf(timeString, sizeof(timeString), "%2d:%02d:%02d", hours, minutes, seconds);
+		// Draw the timeString using u8g2_DrawStr (adjust coordinates as needed)
+		u8g2_DrawStr(&u8g2, 69, 3, timeString);
 		// Drawing the other non-animated elements
 		drawStaticElements();
 	}while (u8g2_NextPage(&u8g2));
