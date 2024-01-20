@@ -70,34 +70,14 @@ void drawSpeed(int speed){
 	}
 }
 
-void batteryStates(int voltageState){
-	switch (voltageState) {
-		case 1:
-		u8g2_DrawXBMP(&u8g2, 17,  9,  6, 12, batteryStatusBits);
-		break;
-		case 2:
-		u8g2_DrawXBMP(&u8g2, 17,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 24,  9,  6, 12, batteryStatusBits);
-		break;
-		case 3:
-		u8g2_DrawXBMP(&u8g2, 17,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 24,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 31,  9,  6, 12, batteryStatusBits);
-		break;
-		case 4:
-		u8g2_DrawXBMP(&u8g2, 17,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 24,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 31,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 38,  9,  6, 12, batteryStatusBits);
-		break;
-		default:
-		u8g2_DrawXBMP(&u8g2, 17,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 24,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 31,  9,  6, 12, batteryStatusBits);
-        u8g2_DrawXBMP(&u8g2, 38,  9,  6, 12, batteryStatusBits);
-		break;
-	}
+void batteryStates(int percentage){
+	// Calculate the width of the battery based on the percentage
+	int batteryWidth = (percentage * 27) / 100; // 27 is the max pixel for the width
+	
+	// Draw the filled part of the battery
+	u8g2_DrawBox(&u8g2, 17, 9, batteryWidth, 12);
 }
+
 
 void drawStaticElements(){
 	u8g2_DrawXBMP(&u8g2, 23,  51,  18, 11, automaticBits);
@@ -128,13 +108,12 @@ void drawDirections(bool directionForwBack, int directionLeftRight){
 }
 
 
-void drawDisplay(int battery, int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds){
+void drawDisplay(int voltagePercentage, int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds){
 	u8g2_FirstPage(&u8g2);
 	do {
 		drawSpeed(speed);
 		modeHighlight(state);
 		// TODO: add the functionality to display the correct battery state
-		batteryStates(battery);
 		drawDirections(directionForwBack, directionLeftRight);
 		// Display the Time
 		// Char array for the time being showed on the display
@@ -146,6 +125,7 @@ void drawDisplay(int battery, int state, int speed, bool directionForwBack, int 
 		u8g2_DrawStr(&u8g2, 69, 3, timeString);
 		// Drawing the other non-animated elements
 		drawStaticElements();
+		batteryStates(voltagePercentage);
 	}while (u8g2_NextPage(&u8g2));
 }
 

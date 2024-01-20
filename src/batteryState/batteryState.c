@@ -1,6 +1,7 @@
 #include "batteryState.h"
 
 int voltage;
+int mappedVoltage;
 
 void batteryADCInit(){
 	ADMUX |= (1 << REFS0); //AVCC
@@ -18,7 +19,19 @@ uint16_t batteryADCRead(uint8_t channel) {
 	return ADC;
 }
 
+int map(int x, int in_min, int in_max, int out_min, int out_max) {
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
 void batteryADC() {
 	int batteryValue = batteryADCRead(3);
-	voltage = (batteryValue * 5)/1023; // V = (adcReading * Vref)/(10 bit)
+	voltage = (batteryValue * 5)/1024; // V = (adcReading * Vref)/(10 bit)
+	
+	// Define the minimum and maximum voltage values
+    float minVoltage = 3.0;  // Replace with your actual minimum voltage
+    float maxVoltage = 4.9;  // Replace with your actual maximum voltage
+
+    // Map the voltage to the range 0 to 100
+    int mappedValue = map(voltage, minVoltage, maxVoltage, 0, 100);
+	mappedVoltage = mappedValue;
 }

@@ -36,7 +36,7 @@ int main(void)
 	// Display Setup
 	initIOModule();
 	batteryADCInit();
-	batteryADC();
+	
 	// Time setup
 	millis_init();
 	// Module Setup
@@ -56,9 +56,9 @@ int main(void)
 		currentmillis = millis();
 		currentDebounce = millis();
 		updateCarTime(currentmillis);
+		batteryADC();
 		saveCarTime();
-		drawDisplay(voltages, currentState, speed, directionForwBack, directionTurn, getHours(), getMinutes(), getSeconds());
-		
+		drawDisplay(mappedVoltage, currentState, speed, directionForwBack, directionTurn, getHours(), getMinutes(), getSeconds());
 		// just for testing
 		steerLeftSimple(200);
 		
