@@ -532,6 +532,12 @@
     <Compile Include="lib\csrc\u8x8_u8toa.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="src\batteryState\batteryState.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="src\batteryState\batteryState.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="src\display\oledModule.c">
       <SubType>compile</SubType>
     </Compile>
@@ -575,6 +581,7 @@
     <Folder Include="src\depricated\" />
     <Folder Include="src\motors" />
     <Folder Include="src\eeprom" />
+    <Folder Include="src\batteryState" />
     <Folder Include="src\Sensors\" />
     <Folder Include="src\display" />
     <Folder Include="src\time" />

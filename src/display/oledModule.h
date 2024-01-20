@@ -7,19 +7,15 @@
 
 /* =============================== Initialize ================================= */
 void initIOModule();
-void batteryADCInit();
-uint16_t batteryADCRead(uint8_t channel);
 /* =============================== Non-animated Icons ================================= */
 void drawStaticElements();
 /* =============================== Animated Icons ================================= */
-void modeHighlight();
-void batteryADC();
+void modeHighlight(int stateHighlight);
+void batteryStates(int voltageState);
 int getSpeedStringLength(int speed, char speed_string[10]);
 void drawSpeed(int speed);
 void drawDirections(bool directionForwBack, int directionLeftRight);
-void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds);
-/* =============================== Testing Functions ================================= */
-void testBitmaps();
+void drawDisplay(int battery, int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds);
 /* =============================== Bitmaps ================================= */
 #define  automaticBits_width 18
 #define  automaticBits_height 11

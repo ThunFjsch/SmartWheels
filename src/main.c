@@ -4,6 +4,7 @@
 #include "time/timeInterrupt.h"
 #pragma "display/oledModule.h"
 #include "eeprom/eeprom.h"
+#include "batteryState/batteryState.h"
 
 // State control
 enum States {
@@ -12,6 +13,7 @@ enum States {
 	BluetoothState = 2
 };
 int currentState = 2;
+int voltages = 1;
 bool directionForwBack = true; // Forward is true. Backward is false
 int directionTurn = 0; // 0 straight 1 left 2 right
 int state = 0;
@@ -34,6 +36,7 @@ int main(void)
 	// Display Setup
 	initIOModule();
 	batteryADCInit();
+	batteryADC();
 	// Time setup
 	millis_init();
 	// Module Setup
@@ -54,7 +57,7 @@ int main(void)
 		currentDebounce = millis();
 		updateCarTime(currentmillis);
 		saveCarTime();
-		drawDisplay(currentState, speed, directionForwBack, directionTurn, getHours(), getMinutes(), getSeconds());
+		drawDisplay(voltages, currentState, speed, directionForwBack, directionTurn, getHours(), getMinutes(), getSeconds());
 		
 		// just for testing
 		steerLeftSimple(200);
