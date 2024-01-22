@@ -21,6 +21,13 @@ bool debug = false;
 // initial time values
 uint32_t previousmillis = 0;
 uint32_t currentmillis = 0;
+
+
+// IR
+uint32_t leftIrState = 0;
+uint32_t rightIrState = 0;
+
+
 uint32_t interval = 100;
 // sensor reading values
 uint8_t leftSensor = 0;
@@ -54,9 +61,13 @@ int main(void)
 		// just for testing
 		steerLeftSimple(200);
 		// Update IR sensor readings
-		updatedIRDetection();
-		leftSensor = leftIRState;	
-		rightSensor = rightIRState;	
+		updatedIRDetection();	
+		leftIrState = getLeftIR();
+		rightIrState = getRightIR();
+		if (leftIrState || rightIrState) {
+			int temp = 0;	
+		}
+		
 		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
 			previousDebounce = currentDebounce;
