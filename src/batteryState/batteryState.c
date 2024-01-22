@@ -1,6 +1,6 @@
 #include "batteryState.h"
 
-int voltage;
+float voltage;
 int mappedVoltage;
 
 void batteryADCInit(){
@@ -24,7 +24,7 @@ int map(int x, int in_min, int in_max, int out_min, int out_max) {
 }
 
 void batteryADC() {
-	int batteryValue = batteryADCRead(3);
+	float batteryValue = batteryADCRead(3);
 	voltage = (batteryValue * 5)/1024; // V = (adcReading * Vref)/(10 bit)
 	
 	// Define the minimum and maximum voltage values
