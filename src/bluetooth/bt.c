@@ -1,68 +1,88 @@
- /*
- * bluetooth.c
- *
- * Created: 07/12/2023 13:58:59
- * Author : Geele Gert
- */ 
-
 #include <avr/io.h>
+#include <stdbool.h>
+#include "bt.h"
 
-void UART_Setup(){
-	//Enable the receive and transmit in USART B
-	UCSR0B |= (1<<RXEN0) | (1<<TXEN0);
-	
-	//Set the data size for communication C
-	UCSR0C &= (~(1<<UMSEL00)) & (~(1<UMSEL01)) & (~(1<<UPM00)) & (~(1<<UPM01)) & (~(1<<USBS0));
+// Function to initialize UART for communication with HC-06
+void initUART() {
+	// Set baud rate to 9600 (assuming 16 MHz clock)
+	UBRR0H = (uint8_t)(0x00);
+	UBRR0L = (uint8_t)(103);
 
-	//Set the data lenght to be 8bit
-	UCSR0B &= (~(1<<UCSZ02));
-	UCSR0B |= (1<<UCSZ00) | (1<<UCSZ01); //8bits
-	
-	//Set the speed of the transmission
-	UCSR0A &= (~(1<<U2X0));
-	
-	//Set the baud rate
-	UBRR0 = 103; //9600
-	
-	/*					Test part   			*/
-	//Set port B5&B4 (onboard led) to output
-	//DDRB |= (1<<DDB5) | (1<<DDB4);
+	// Enable transmitter and receiver
+	UCSR0B = (1 << TXEN0) | (1 << RXEN0);
+
+	// Set frame format: 8 data bits, no parity, 1 stop bit
+	UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);
 }
 
-unsigned char USART_Receive(){
-	while(!(UCSR0A & (1<<RXC0)));
+// Function to send a character via UART
+void sendChar(char c) {
+	// Wait until the transmit buffer is empty
+	while (!(UCSR0A & (1 << UDRE0))) {}
+
+	// Put the character in the buffer, sends the character
+	UDR0 = c;
+}
+
+// Function to receive a character via UART
+char receiveChar() {
+	// Wait until data is received
+	while (!(UCSR0A & (1 << RXC0))) {}
+
+	// Return the received character
 	return UDR0;
 }
 
-void UART_TxChar(char ch){
-	while(!(UCSR0A & (1<<UDRE0)));
-	UDR0 = ch;
+void turnOnLED() {
+	// Set PORTB, Pin 0 as output
+	DDRB |= (1 << DDB1);
+
+	// Turn on the LED on PORTB, Pin 0
+	PORTB |= (1 << PORTB1);
 }
-// 
-// int main(void){
-// 	
-// 	UART_Setup();
-// 	
-// 	//Make a variable that holds user input
-// 	unsigned char data = "";
-// 	
-// 	while(1){//Endless while loop
-// 	
-// 		data = USART_Receive();
-// 		
-// 		switch(data){
-// 			case 'a':
-// 				PORTB |= (1<<PB5);
-// 				break;
-// 			case 'b':
-// 				PORTB &= (~(1<<PB5));
-// 				PORTB &= (~(1<<PB4));
-// 				break;
-// 			case 'j':
-// 				PORTB |= (1<<PB4);
-// 				break;
-// 		}
-// 	
-// 	}
-// }
-// 
+
+// Function to turn off the LED on PORTB
+void turnOffLED() {
+	// Turn off the LED on PORTB, Pin 0
+	PORTB &= ~(1 << PORTB1);
+}
+
+void processControllerInput(char data) {
+    switch (data) {
+        case 'F':
+            // Move forward
+            direction_ = true;
+            setMotorDirection(direction_);
+			setAllMotorSpeed(240);
+			turnOnLED();
+			sendChar('F');
+            break;
+        case 'B':
+            // Move backward
+            direction_ = false;
+            setMotorDirection(direction_);
+			setAllMotorSpeed(240);
+			turnOffLED();
+            break;
+        case 'L':
+            // Turn left
+            steerLeftSimple(200);
+			turnOnLED();
+            break;
+        case 'R':
+            // Turn right
+            steerRightSimple(200);
+			turnOffLED();
+            break;
+        case 'S':
+            // Stop
+            stopMotors();
+            break;
+		default:
+			// Handle unknown command
+			// (You can add more handling here if needed)
+			sendChar('F');
+			break;
+    }
+}
+

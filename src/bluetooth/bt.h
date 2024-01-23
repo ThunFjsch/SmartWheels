@@ -1,24 +1,14 @@
-/*
- * bt.h
- *
- * Created: 19/12/2023 11:02:30
- *  Author: Geele Gert
- */ 
-
-
 #ifndef BT_H_
 #define BT_H_
 
-#include <avr/io.h>
+bool direction_;
+bool leftDirection_;
+bool rightDirection_;
 
-/*		establish a connection		*/
-void UART_Setup();
-unsigned char USART_Receive();
-void UART_TxChar(char ch);
-
-/*		receiver function				*/	
-
-
-
-
+void initUART();
+void sendChar(char c);
+char receiveChar();
+void turnOnLED();
+void turnOffLED();
+void processControllerInput(char data);
 #endif /* BT_H_ */
