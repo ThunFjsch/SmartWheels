@@ -52,7 +52,6 @@ int main(void)
 		data = receiveChar();
 		processControllerInput(data);
 
-
 		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
 			previousDebounce = currentDebounce;
@@ -61,6 +60,5 @@ int main(void)
 				currentState = 0;
 			}
 		}
-		
 	}
 }

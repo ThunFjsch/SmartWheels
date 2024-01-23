@@ -15,8 +15,8 @@ void initMotorModule(bool test){
 	DDRB |= 1<<PINB0 | 1<<PINB3 | 1<<PINB1 | 1<<PINB2;	// IN1/2 | IN3/4 | ENA | ENB
 	
 	// Timer/Counter0
-	TCCR1A |= 1<<WGM11 | 1<<WGM10 | 1<<COM1A1 | 1<<COM1B1;
-	TCCR1B |= 1<<CS12 | 1<<CS10;
+	TCCR1A |= 1<<WGM12 | 1<<WGM10 | 1<<COM1A1 | 1<<COM1B1;
+	TCCR1B |= 1<<CS11;
 	
 	// Indicator LED lights
 	DDRC |= (1<<DDC1) | (1<<DDC2);

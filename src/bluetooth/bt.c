@@ -54,25 +54,32 @@ void processControllerInput(char data) {
             direction_ = true;
             setMotorDirection(direction_);
 			setAllMotorSpeed(240);
-			turnOnLED();
-			sendChar('F');
+			sendChar('G');
             break;
         case 'B':
             // Move backward
             direction_ = false;
             setMotorDirection(direction_);
 			setAllMotorSpeed(240);
-			turnOffLED();
+			sendChar('B');
             break;
         case 'L':
             // Turn left
-            steerLeftSimple(200);
-			turnOnLED();
+			leftDirection_ = false;
+			rightDirection_ = true;
+			setIndividualDirection(leftDirection_, rightDirection_);
+			setRightMotorSpeed(255);
+			setLeftMotorSpeed(255);
+			sendChar('L');
             break;
         case 'R':
             // Turn right
-            steerRightSimple(200);
-			turnOffLED();
+			leftDirection_ = true;
+			rightDirection_ = false;
+			setIndividualDirection(leftDirection_, rightDirection_);
+			setRightMotorSpeed(255);
+			setLeftMotorSpeed(255);
+			sendChar('R');
             break;
         case 'S':
             // Stop
