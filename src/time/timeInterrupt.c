@@ -5,7 +5,6 @@ volatile uint32_t ms = 0;
 
 void millis_init(void){
 	ms = 0;
-	
 	// Configure Timer/counter 0 to generate an interrupt every millisecond
 	// T_events = T_CPU * N * (TOP + 1)
 	//					= 1/16 MHz * 64 * (249 +1)
