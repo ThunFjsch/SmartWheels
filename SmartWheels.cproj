@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <SchemaVersion>2.0</SchemaVersion>
@@ -41,7 +41,7 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.medbg</avrtool>
-    <avrtoolserialnumber>ATML2323052700006584</avrtoolserialnumber>
+    <avrtoolserialnumber>ATML2323052700006412</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x1E950F</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_medbg>
       <ToolOptions>
@@ -50,7 +50,7 @@
         <InterfaceName>debugWIRE</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.medbg</ToolType>
-      <ToolNumber>ATML2323052700006584</ToolNumber>
+      <ToolNumber>ATML2323052700006412</ToolNumber>
       <ToolName>mEDBG</ToolName>
     </com_atmel_avrdbg_tool_medbg>
     <avrtoolinterface>debugWIRE</avrtoolinterface>
@@ -532,22 +532,16 @@
     <Compile Include="lib\csrc\u8x8_u8toa.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\batteryState\batteryState.c">
+    <Compile Include="src\bluetooth\bt.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="src\batteryState\batteryState.h">
+    <Compile Include="src\bluetooth\bt.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\display\oledModule.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\display\oledModule.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\eeprom\eeprom.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="src\eeprom\eeprom.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="src\main.c">
@@ -580,8 +574,7 @@
     <Folder Include="src\" />
     <Folder Include="src\depricated\" />
     <Folder Include="src\motors" />
-    <Folder Include="src\eeprom" />
-    <Folder Include="src\batteryState" />
+    <Folder Include="src\bluetooth" />
     <Folder Include="src\Sensors\" />
     <Folder Include="src\display" />
     <Folder Include="src\time" />

@@ -1,6 +1,7 @@
 #include <avr/io.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "bluetooth/bt.h"
 #include "time/timeInterrupt.h"
 #pragma "display/oledModule.h"
 #include "eeprom/eeprom.h"
@@ -19,6 +20,7 @@ int directionTurn = 0; // 0 straight 1 left 2 right
 int state = 0;
 int speed = 0;
 bool debug = false;
+char data;
 
 // initial time values
 uint32_t previousmillis = 0;
@@ -33,35 +35,47 @@ uint32_t debounceInterval = 400;
 
 int main(void)
 {
+	initUART();
 	// Display Setup
 	initIOModule();
 	batteryADCInit();
 	
 	// Time setup
 	millis_init();
-	// Module Setup
+	// Motor Module Setup
 	initMotorModule(false);
-	// Usage Time setup
-	initTimeModule();
-	
 	
 	DDRD |= ~(1<<DDD2);	// Button mode switch
 	PORTD |= (1<<PORTD2); // Pull-up resistor for button
 
 
 	sei();	// Allow the interrupt
-	
-	
+
+	DDRB |= (1<<DDB5);
+
   while(1){
-		currentmillis = millis();
+    // time
+    currentmillis = millis();
 		currentDebounce = millis();
-		updateCarTime(currentmillis);
+    // display
+    updateCarTime(currentmillis);
 		batteryADC();
 		saveCarTime();
-		drawDisplay(mappedVoltage, currentState, speed, directionForwBack, directionTurn, getHours(), getMinutes(), getSeconds());
-		// just for testing
-		steerLeftSimple(200);
-		
+		drawDisplay(currentState, speed, directionForwBack, directionTurn);
+
+		switch(currentState){
+			case States.AutonomousState:
+				// add code
+				break;
+			case States.FollowerState:
+				// add code
+				break;
+			case States.BluetoothState:
+				data = receiveChar();
+				processControllerInput(data);
+				break;		
+		}
+
 		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
 			previousDebounce = currentDebounce;
@@ -70,6 +84,5 @@ int main(void)
 				currentState = 0;
 			}
 		}
-		
 	}
 }
