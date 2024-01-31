@@ -67,18 +67,14 @@ void processControllerInput(char data) {
             // Turn left
 			leftDirection_ = false;
 			rightDirection_ = true;
-			setIndividualDirection(leftDirection_, rightDirection_);
-			setRightMotorSpeed(255);
-			setLeftMotorSpeed(255);
+			zeroDegreeLeft(255);
 			sendChar('L');
             break;
         case 'R':
             // Turn right
 			leftDirection_ = true;
 			rightDirection_ = false;
-			setIndividualDirection(leftDirection_, rightDirection_);
-			setRightMotorSpeed(255);
-			setLeftMotorSpeed(255);
+			zeroDegreeRight(255);
 			sendChar('R');
             break;
         case 'S':
@@ -88,7 +84,7 @@ void processControllerInput(char data) {
 		default:
 			// Handle unknown command
 			// (You can add more handling here if needed)
-			sendChar('F');
+			sendChar('E');
 			break;
     }
 }

@@ -49,8 +49,19 @@ int main(void)
 		currentmillis = millis();
 		currentDebounce = millis();
 		drawDisplay(currentState, speed, directionForwBack, directionTurn);
-		data = receiveChar();
-		processControllerInput(data);
+		
+		switch(currentState){
+			case States.AutonomousState:
+				// add code
+				break;
+			case States.FollowerState:
+				// add code
+				break;
+			case States.BluetoothState:
+				data = receiveChar();
+				processControllerInput(data);
+				break;		
+		}
 
 		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
