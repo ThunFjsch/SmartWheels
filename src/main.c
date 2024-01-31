@@ -4,14 +4,17 @@
 #include "bluetooth/bt.h"
 #include "time/timeInterrupt.h"
 #pragma "display/oledModule.h"
+#include "eeprom/eeprom.h"
+#include "batteryState/batteryState.h"
 
-// State controle
+// State control
 enum States {
 	AutonomousState = 0,
 	FollowerState = 1,
 	BluetoothState = 2
 };
 int currentState = 2;
+int voltages = 1;
 bool directionForwBack = true; // Forward is true. Backward is false
 int directionTurn = 0; // 0 straight 1 left 2 right
 int state = 0;
@@ -29,27 +32,37 @@ uint32_t previousDebounce = 0;
 uint32_t currentDebounce = 0;
 uint32_t debounceInterval = 400;
 
+
 int main(void)
 {
 	initUART();
 	// Display Setup
 	initIOModule();
+	batteryADCInit();
+	
 	// Time setup
 	millis_init();
-	// Module Setup
-	initMotorModule(false);	
-
+	// Motor Module Setup
+	initMotorModule(false);
+	
 	DDRD |= ~(1<<DDD2);	// Button mode switch
 	PORTD |= (1<<PORTD2); // Pull-up resistor for button
 
+
 	sei();	// Allow the interrupt
+
 	DDRB |= (1<<DDB5);
 
   while(1){
-		currentmillis = millis();
+    // time
+    currentmillis = millis();
 		currentDebounce = millis();
+    // display
+    updateCarTime(currentmillis);
+		batteryADC();
+		saveCarTime();
 		drawDisplay(currentState, speed, directionForwBack, directionTurn);
-		
+
 		switch(currentState){
 			case States.AutonomousState:
 				// add code

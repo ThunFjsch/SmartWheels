@@ -1,8 +1,15 @@
 #include "oledModule.h"
+#include "../batteryState/batteryState.h"
 #include <string.h>
 #define SSD1306_ADDR  0x78 // address select 8-bit 0x78
 
 u8g2_t u8g2;
+
+enum time {
+	HOURS,
+	MINUTES,
+	SECONDS
+};
 
 // Array of the digits used in the speedometer
 #define lengthSpeedometerDigits 10
@@ -18,7 +25,6 @@ const unsigned char* speedometerDigits[lengthSpeedometerDigits] = {
 	digit_8_bits,
 	digit_9_bits
 };
-
 
 void initIOModule(){
 	u8g2_Setup_ssd1306_i2c_128x64_noname_f(&u8g2, U8G2_R0, u8x8_byte_avr_hw_i2c, u8x8_avr_delay);
@@ -64,20 +70,28 @@ void drawSpeed(int speed){
 	}
 }
 
+void batteryStates(int percentage){
+	// Calculate the width of the battery based on the percentage
+	int batteryWidth = (percentage * 27) / 100; // 27 is the max pixel for the width
+	
+	// Draw the filled part of the battery
+	u8g2_DrawBox(&u8g2, 17, 9, batteryWidth, 12);
+}
+
 
 void drawStaticElements(){
 	u8g2_DrawXBMP(&u8g2, 23,  51,  18, 11, automaticBits);
 	u8g2_DrawXBMP(&u8g2, 23,  37,  16, 12, automaticIconBits);
-	u8g2_DrawXBMP(&u8g2, 14,  6,  36, 18, batteryBits);  // TODO: change this to a dynamic way of displaying the battery state
+	u8g2_DrawXBMP(&u8g2, 14,  6,  36, 18, batteryBits);
 	u8g2_DrawXBMP(&u8g2, 89,  45,  15, 6, kmhBits);
-	u8g2_DrawXBMP(&u8g2, 2,  51,  16, 11, remoteControlModeBits);
+	u8g2_DrawXBMP(&u8g2, 2,  52,  16, 11, remoteControlModeBits);
 	u8g2_DrawXBMP(&u8g2, 2,  38,  16, 21, remoteControlModeIconBits);
 	u8g2_DrawXBMP(&u8g2, 45,  51,  18, 11, slaveModeBits);
 	u8g2_DrawXBMP(&u8g2, 45,  37,  17, 13, slaveModeIconBits);
 	u8g2_DrawXBMP(&u8g2, 106, 45, 16, 16, arrowDownBits);
 	u8g2_DrawXBMP(&u8g2, 72, 45, 16, 16, arrowUpBits);
 	u8g2_DrawXBMP(&u8g2, 89, 52, 7, 9, leftArrowBits);
-	u8g2_DrawXBMP(&u8g2, 97, 52, 7, 9, rightArrowBits);
+	u8g2_DrawXBMP(&u8g2, 97, 52, 7, 9, rightArrowBits);	
 }
 
 void drawDirections(bool directionForwBack, int directionLeftRight){
@@ -94,7 +108,7 @@ void drawDirections(bool directionForwBack, int directionLeftRight){
 }
 
 
-void drawDisplay(int state, int speed, bool directionForwBack, int directionLeftRight){
+void drawDisplay(int voltagePercentage, int state, int speed, bool directionForwBack, int directionLeftRight, int hours, int minutes, int seconds){
 	u8g2_FirstPage(&u8g2);
 	do {
 		drawSpeed(speed);
@@ -103,14 +117,15 @@ void drawDisplay(int state, int speed, bool directionForwBack, int directionLeft
 		drawDirections(directionForwBack, directionLeftRight);
 		// Display the Time
 		// Char array for the time being showed on the display
-		/*
-		char timeString[9];
-		sprintf_P(timeString, PSTR("%2d:%02d:%02d"), hours, minutes, seconds);
-		// Draw the timeString
-		u8g2_DrawStr(&u8g2, 73, 12, timeString);
-		*/
+		char timeString[9]; 
+		memset(timeString, 0, sizeof(timeString));
+		// Format the time string
+		snprintf(timeString, sizeof(timeString), "%2d:%02d:%02d", hours, minutes, seconds);
+		// Draw the timeString using u8g2_DrawStr (adjust coordinates as needed)
+		u8g2_DrawStr(&u8g2, 69, 3, timeString);
 		// Drawing the other non-animated elements
 		drawStaticElements();
+		batteryStates(voltagePercentage);
 	}while (u8g2_NextPage(&u8g2));
 }
 
