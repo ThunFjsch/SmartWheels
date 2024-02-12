@@ -2,10 +2,14 @@
 #define IRSENSOR_H
 
 #include <avr/io.h>
-void initIRModule();
-uint16_t adc_read(uint8_t adc_channel);
-void updatedIRDetection();
-uint8_t getRightIR();
-uint8_t getLeftIR();
+#include <stdbool.h>
+bool direction_;
+bool leftDirection_;
+bool rightDirection_;
+
+void initIrPins(void);
+int irSensorRead(int sensor_select);
+int readSensor(int sensor);
+
 #endif 
 

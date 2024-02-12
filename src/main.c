@@ -5,6 +5,10 @@
 #pragma "display/oledModule.h"
 #include "Sensors/irSensor.h"
 
+bool direction_;
+bool leftDirection_;
+bool rightDirection_;
+
 // State controle
 enum States {
 	AutonomousState = 0,
@@ -39,15 +43,13 @@ uint32_t debounceInterval = 400;
 
 int main(void)
 {
+	initIrPins();
 	// Display Setup
 	initIOModule();
 	// Time setup
 	millis_init();
 	// Module Setup
 	initMotorModule(false);
-	
-	initIRModule();
-
 	DDRD |= ~(1<<DDD2);	// Button mode switch
 	PORTD |= (1<<PORTD2); // Pull-up resistor for button
 
@@ -57,16 +59,11 @@ int main(void)
 		currentmillis = millis();
 		currentDebounce = millis();
 		drawDisplay(currentState, speed, directionForwBack, directionTurn);
-		
-		// just for testing
-		steerLeftSimple(200);
 		// Update IR sensor readings
-		updatedIRDetection();	
-		leftIrState = getLeftIR();
-		rightIrState = getRightIR();
-		if (leftIrState || rightIrState) {
-			int temp = 0;	
-		}
+		irSensorRead(1);
+		irSensorRead(2);
+		readSensor(1);
+		readSensor(2);
 		
 		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){
