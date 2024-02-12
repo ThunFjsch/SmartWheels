@@ -18,7 +18,7 @@ enum States {
 int currentState = 2;
 bool directionForwBack = true; // Forward is true. Backward is false
 int directionTurn = 0; // 0 straight 1 left 2 right
-int state = 0;
+int state = 1;
 int speed = 0;
 bool debug = false;
 
@@ -59,11 +59,14 @@ int main(void)
 		currentmillis = millis();
 		currentDebounce = millis();
 		drawDisplay(currentState, speed, directionForwBack, directionTurn);
-		// Update IR sensor readings
-		irSensorRead(1);
-		irSensorRead(2);
-		readSensor(1);
-		readSensor(2);
+		
+		
+		if(state == FollowerState){
+			// Update IR sensor readings
+			//irSensorRead(1);
+			//irSensorRead(2);
+			readSensor(1, 2);
+		}
 		
 		//State change selection via button
 		if(!(PIND & (1<<PIND2)) && (currentDebounce - previousDebounce) >= debounceInterval){

@@ -9,7 +9,7 @@ bool rightDirection_;
 
 void initIrPins(void);
 int irSensorRead(int sensor_select);
-int readSensor(int sensor);
+int readSensor(int sensorLeft, int sensorRight);
 
 #endif 
 
